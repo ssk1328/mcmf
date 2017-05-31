@@ -19,6 +19,14 @@ print "numMeshnodes is %d"%numMeshnodes
 print "meshEdge is %d"%meshEdge
 
 
+## This is the inflow and outflow at source and destination respectively for all comoodities
+## This represents how many parts the packet can be broken into
+pack_lenght = 8;
+
+## This is the fixed capacity for all arcs
+## This has to be changed to get a feasible soluton usually
+capacity_const = 9;
+
 incidenceAll = {2 : [0,1,3], 
                 3 : [0,1,3,9],               
                 4 : [0,1,4,14,16],           
@@ -38,7 +46,8 @@ incidence = incidenceAll[p]
 ## Add code to read this from file later, add code to print this in a file in qap solver cpp file later
 
 placementAll = {
-    2: [8, 4, 7, 1, 5, 2, 0, 6, 3]
+    2: [8, 4, 7, 1, 5, 2, 0, 6, 3] ,
+    3: [13, 1, 11, 2, 14, 0, 10, 12, 9, 5, 8, 6, 15, 4, 7, 3] 
 }
 
 placement = placementAll[p]
@@ -132,8 +141,13 @@ print "commodities:"
 print commodities
 
 nodes = [] # start with empty list for nodes
-for i in range(len(dependency_in)):
-	nodes.append('p'+str(i))
+
+for i in range(len(placement)):
+    string = 'p'+str(placement[i])+'m'+str(i)
+    nodes.append(string)
+
+#   for i in range(len(dependency_in)):
+#	  nodes.append('p'+str(i))
 
 print "nodes:"
 print nodes
@@ -151,15 +165,23 @@ for i in commodities:
 	dest = int(i[index_d1:index_end])
 
 	for j in nodes:
-		if j == 'p'+str(src):
-			inflow[(i, j)] = 8 
-		elif j == 'p'+str(dest):
-			inflow[(i, j)] = -8 
+
+		n_index_p = j.index('p')
+		n_index_m = j.index('m')
+
+		p_num = j[n_index_p:n_index_m]
+
+		if   p_num == 'p'+str(src):
+			inflow[(i, j)] = pack_lenght 
+		elif p_num == 'p'+str(dest):
+			inflow[(i, j)] = -pack_lenght
 		else :
 			inflow[(i, j)] = 0 
 
+print "Inflow: "
 print inflow
-
+print "Lenght of inflow dictionary: "
+print len(inflow)
 
 print " "
 print " "
@@ -171,13 +193,13 @@ print "meshEdge is %d"%meshEdge
 arc = []
 for i in range(numMeshnodes):
 	if i >= meshEdge : #up
-		arc.append(( 'p'+str(i), 'p'+str(i-meshEdge)))
+		arc.append(( 'p'+str(placement[i])+'m'+str(i), 'p'+ str(placement[i-meshEdge]) +'m'+str(i-meshEdge)))
 	if i%meshEdge > 0 : #left
-		arc.append(( 'p'+str(i), 'p'+str(i-1)))
+		arc.append(( 'p'+str(placement[i])+'m'+str(i), 'p'+ str(placement[i-1]) +'m'+str(i-1)))
 	if i < numMeshnodes - meshEdge :  # down
-		arc.append(( 'p'+str(i), 'p'+str(i+meshEdge)))
+		arc.append(( 'p'+str(placement[i])+'m'+str(i), 'p'+ str(placement[i+meshEdge]) +'m'+str(i+meshEdge)))
 	if i%meshEdge < meshEdge-1 :  # right
-		arc.append(( 'p'+str(i), 'p'+str(i+1)))
+		arc.append(( 'p'+str(placement[i])+'m'+str(i), 'p'+ str(placement[i+1]) +'m'+str(i+1)))
 
 
 print arc
@@ -194,28 +216,28 @@ multi_dict = {}
 
 
 for i in arc:
-	multi_dict[i] = 160	# Change to get a feasible solution
+	multi_dict[i] =  capacity_const	# Change to get a feasible solution
 
 arcs, capacity = multidict(multi_dict)
 
 
-print "All arcs after: "
-print arcs
+# print "All arcs after: "
+# print arcs
 
-print "All capacities after: "
-print capacity
+# print "All capacities after: "
+# print capacity
 
 cost = {}
 
 for i in commodities:
 	for j in arc:
-		print j
+#		print j
 		j_list = list(j)
-		print j_list
+#		print j_list
 		#j_tup = j_list.insert(0,i)
 		j_tup = [i]+j_list
-		print i
-		print j_tup
+#		print i
+#		print j_tup
 		tup = tuple(j_tup)
 		cost[tup] = 1
 
@@ -223,8 +245,8 @@ print ""
 print ""
 print ""
 
-print "Cost: "
-print cost
+# print "Cost: "
+# print cost
 
 m = Model('netflow')
 
