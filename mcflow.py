@@ -2,6 +2,7 @@ from gurobipy import *
 
 import math
 import sys
+import copy
 
 p = 2	# Size of pg, this was specified from command line
 print "Size of pg, p is %d"%p 
@@ -221,8 +222,9 @@ for i in arc:
 arcs, capacity = multidict(multi_dict)
 
 
-# print "All arcs after: "
-# print arcs
+print "All arcs after: "
+print type(arcs)
+print arcs
 
 # print "All capacities after: "
 # print capacity
@@ -284,4 +286,208 @@ if m.status == GRB.Status.OPTIMAL:
         for i,j in arcs:
             if solution[h,i,j] > 0:
                 print('%s -> %s: %g' % (i, j, solution[h,i,j]))
+
+    print "Solution:"
+    print "Solution type:",
+    print type(solution)
+    print len(solution)
+
+arc_solution = copy.copy(solution)
+
+arc_list = []
+# add info about convention in ths data structure
+
+def check_flow ( commodity ):
+	minimum_flow = 9999 # supposed to be infinity
+
+	for i,j in arcs:
+		if (arc_solution[commodity, i, j] > 0) & (arc_solution[commodity, i, j]  < minimum_flow) :
+			minimum_flow = arc_solution[commodity, i, j]
+
+	if minimum_flow == 9999:	# Means no non-zero flow was found
+		minimum_flow = 0
+
+	return minimum_flow
+
+def get_src_dst (commodity) :
+	## Returns source and destination nodes for a commodity
+
+	index_s = commodity.index('s') + 1
+	index_d = commodity.index('d')
+	index_d1 = commodity.index('d') + 1
+	index_end = len(commodity)
+
+	src = int(commodity[index_s:index_d])
+	dest = int(commodity[index_d1:index_end])
+
+#	print "In get_src_dst function:"
+#	print "For commodity:", commodity
+
+#	print "Source and Destination processor ids are respectively"
+
+	for j in nodes:
+		n_index_p = j.index('p')+1
+		n_index_m = j.index('m')
+
+		p_num = int(j[n_index_p:n_index_m])
+
+#		print "Nodes is:", j
+#		print "p_num is:", p_num
+		
+		if src == p_num :
+			src_nd = j
+
+		if dest == p_num :
+			dest_nd = j
+
+
+	return src_nd , dest_nd
+
+def get_next_node (commodity, previous_node):
+
+#	print " "
+#	print "Inside get_next_node function"
+	min_val = 9999
+
+#	print "previous_node is ", previous_node
+
+	for x,y in arcs:
+		if (x==previous_node):
+#			print 'x is', x
+#			print 'y is', y
+			sol_tmp = arc_solution[commodity, x, y]
+#			print "sol_temp", sol_tmp 
+#			print "(sol_tmp > 0) :" , (sol_tmp > 0) 
+#			print "(sol_tmp < min_val)" , (sol_tmp < min_val)
+			if  (sol_tmp > 0) & (sol_tmp < min_val) :
+#				print "Value of next node", y
+				min_val = arc_solution[commodity, x, y]
+				min_dst = y
+
+#	print "min_dst before return of function", min_dst
+	return min_dst
+
+
+print ""
+print ""
+print "Arc solutions start from here"
+
+for h in commodities:
+#	print "Addition of arc info for commodity:", h
+	src_node, dest_node = get_src_dst(h)
+
+#	print "Source Node: ", src_node
+#	print "Destination Node: ", dest_node
+
+	while check_flow(h)>0 :
+		min_flow = check_flow(h)
+#		print "Min Flow Value is:" , min_flow
+		path_list = []
+		path_list.append(src_node)
+		
+		prev_node = src_node
+		next_node = src_node
+
+		while (next_node != dest_node ):
+#			print "Prev Node is:" , prev_node
+			next_node = get_next_node(h, prev_node)
+#			print "Next node is;" , next_node
+			path_list.append(next_node)
+#			print path_list
+			arc_solution[h, prev_node, next_node] = arc_solution[h, prev_node, next_node]  - min_flow 
+
+			prev_node = next_node
+
+#		print "Outside while now"
+
+		path_length = len(path_list)
+		path_source = path_list[0]
+		path_dest = path_list[path_length-1]
+
+		arc_list.append([ path_source, path_dest, min_flow, path_list ])
+
+#	print "Commodity done:", h
+#	print ""
+
+
+
+print "Arc_list generated:"
+
+for j in range(len(arc_list)):
+	print "arc_id", j ,
+	print ":",
+	print arc_list[j]
+
+
+print "Lets populate data structure at source:"
+
+
+print ""
+print "**********************************************"
+print "PACKET SPECIFICATION AT INPUT NODES"
+print "**********************************************"
+for j in nodes:
+	print ""
+	print "Input packet specifications at node:", j
+
+	for arc_id in range (len(arc_list)):
+		if arc_list[arc_id][0]== j :
+			print "For Destination: ", arc_list[arc_id][1] ,
+			print "arc_id is", arc_id, 
+			print "count is", arc_list[arc_id][2]
+
+
+print ""
+print "**********************************************"
+print "PACKET ROUTING AT INTERMEDIATE NODES"
+print "**********************************************"
+
+for j in nodes:
+	print ""
+	print "Intermediate packet routing at node:", j
+
+	for arc_id in range (len(arc_list)):
+		arc_path = arc_list[arc_id][3]
+		len_arc_path = len(arc_path)
+		for i in range(len_arc_path):
+
+			if arc_path[i]==j:
+
+
+				if i == len_arc_path-1 :
+					direction = 'H'
+				else :
+					current_node_in_path = arc_path[i]
+					next_node_in_path = arc_path[
+					i+1]
+					
+
+
+					curr_index_m = current_node_in_path.index('m')
+					curr_index_last = len(current_node_in_path)
+
+					next_index_m = next_node_in_path.index('m')
+					next_index_last = len(next_node_in_path)
+
+					current_node_mesh = int(current_node_in_path[curr_index_m+1:curr_index_last])
+					next_node_mesh = int(next_node_in_path[next_index_m+1:next_index_last])
+
+					if(next_node_mesh == current_node_mesh +1 ):
+						direction = 'E'
+					elif (next_node_mesh == current_node_mesh - 1 ):
+						direction = 'W'
+					elif ((next_node_mesh/3) == (current_node_mesh/3)+1):
+						direction = 'S'
+					elif ((next_node_mesh/3) == (current_node_mesh/3)-1):
+						direction = 'N'
+
+				print "For arc_id: ", arc_id ,
+
+				print "direction is", direction  
+
+
+
+
+
+
 
