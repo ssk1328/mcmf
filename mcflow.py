@@ -22,11 +22,11 @@ print "meshEdge is %d"%meshEdge
 
 ## This is the inflow and outflow at source and destination respectively for all comoodities
 ## This represents how many parts the packet can be broken into
-pack_lenght = 8;
+pack_lenght = 1;
 
 ## This is the fixed capacity for all arcs
 ## This has to be changed to get a feasible soluton usually
-capacity_const = 9;
+capacity_const = 2;
 
 incidenceAll = {2 : [0,1,3], 
                 3 : [0,1,3,9],               
@@ -46,12 +46,17 @@ incidence = incidenceAll[p]
 ## based quadratic assignment problem solver
 ## Add code to read this from file later, add code to print this in a file in qap solver cpp file later
 
+
 placementAll = {
     2: [8, 4, 7, 1, 5, 2, 0, 6, 3] ,
     3: [13, 1, 11, 2, 14, 0, 10, 12, 9, 5, 8, 6, 15, 4, 7, 3] 
 }
 
 placement = placementAll[p]
+
+## This means that at the ith location in mesh we put up the placement[i]th processor
+## Example here processor 8 is placed at 0th location in mesh
+## Example here processor 4 is placed at 1st location in mesh
 
 ## Dependency generically means the nodes with which given node communicates. In matrix vector product, we 
 ## communicate only with the Nodes containing : Line Nodes of the given point node and the point nodes of the given 
@@ -134,9 +139,9 @@ print commTraffic
 ## For time t=0, use dependency_out from abbove
 
 commodities = [] # start with empty list for commodities
-for i in range(len(dependency_in)):
-	for j in range(len(dependency_in[i])):
-		commodities.append('s'+ str(i) +'d'+ str(dependency_in[i][j]))
+for i in range(len(dependency)):
+	for j in range(len(dependency[i])):
+		commodities.append('s'+ str(i) +'d'+ str(dependency[i][j]))
 
 print "commodities:"
 print commodities
@@ -436,15 +441,75 @@ for j in nodes:
 			print "arc_id is", arc_id, 
 			print "count is", arc_list[arc_id][2]
 
+## ***************************************************** ##
+## FILE WRITING STARTS HERE
+## ***************************************************** ##
+
+filename = "Lookup.bsv"
+f = open(filename, 'w')
+
+f.write("import MemTypes::*;\n")
+f.write("import ProcTypes::*;\n")
+f.write("\n")
+f.write("// Python generated code which returns arc_id for each pair of source and destination of packets \n")
+f.write("\n")
+f.write("function NoCArcId lookupNoCArcId(ProcID srcProcId, ProcID destProcID);\n")
+
+for j in nodes:
+
+	index0 = j.index('p')+1
+	index1 = j.index('m')
+	pnum = j[index0:index1]
+
+	f.write("  if (srcProcId == " + pnum + ") begin\n")	
+
+	for arc_id in range (len(arc_list)):
+		if arc_list[arc_id][0]== j :
+			dest_node = arc_list[arc_id][1]
+
+			index_0 = dest_node.index('p')+1
+			index_1 = dest_node.index('m')
+			pnum_0 = dest_node[index_0:index_1]
+
+			ret_arc_id = str(arc_id)
+
+			f.write("    if(destProcID == "+ pnum_0 +") return " + ret_arc_id + ";\n")
+#	f.write("    else return 0;\n")
+	f.write("  end\n")
+
+f.write("  else return 0;\n")
+
+f.write("endfunction\n")
+
 
 print ""
 print "**********************************************"
 print "PACKET ROUTING AT INTERMEDIATE NODES"
 print "**********************************************"
 
+f.write("\n")
+f.write("\n")
+
+f.write("// Lookup function for destination node at each mesh node corresponding to the arc id and source mesh \n")
+f.write("function String lookupArcDest ( NoCAddr2D thisRowAddr, NoCAddr2D thisColAddr, NoCArcId arc_index); \n")
+
+
+f.write ("endfunction \n")
+
+
 for j in nodes:
+
 	print ""
-	print "Intermediate packet routing at node:", j
+	print "Packet routing direction at node:", j
+
+	index0 = j.index('m')+1
+	index1 = len(j)
+	mesh_num = int(j[index0:index1])
+
+	mesh_row = int(mesh_num/meshEdge)
+	mesh_col = mesh_num%meshEdge
+
+	f.write("  if ((thisRowAddr == " + str(mesh_row) + ") & (thisColAddr == " + str(mesh_col) + ")) begin \n")
 
 	for arc_id in range (len(arc_list)):
 		arc_path = arc_list[arc_id][3]
@@ -458,8 +523,7 @@ for j in nodes:
 					direction = 'H'
 				else :
 					current_node_in_path = arc_path[i]
-					next_node_in_path = arc_path[
-					i+1]
+					next_node_in_path = arc_path[i+1]
 					
 
 
@@ -482,11 +546,27 @@ for j in nodes:
 						direction = 'N'
 
 				print "For arc_id: ", arc_id ,
-
 				print "direction is", direction  
+				f.write("    if (arc_index == "+ str(arc_id)+") return \"" + direction+"\"  ;\n")
+	f.write("  end \n")
+f.write("endfunction\n")
 
 
+f.write("\n")
+f.write("\n")
+f.write("// This is device placement generated from the qap solver used before hardcoded in mcmf.py file right now  \n")
+f.write("function MeshID lookupNoCAddr(ProcID currProcId); \n")
+f.write("  case (currProcId)\n")
 
+for i in range(numCores):
+	for j in range(len(placement)):
+		if placement[j] == i :
+			f.write("    "+ str(i) + ": return " + str(j) + "; \n")
+
+
+f.write("  endcase \n")
+f.write("endfunction \n")
+f.close()
 
 
 
