@@ -1,10 +1,6 @@
 # mcmf
-<<<<<<< HEAD
-=======
 =======
 
-
->>>>>>> 7bcd6936493bf9b44fa63ec71114f8b7a73817ff
 Various python scripts, that use solvers like gurobi and qap to get optimum pacement flow routing of packets on a Network on Chip for a Matrix Vector Multiplication application
 
 The tasks can be broken down in to the following
