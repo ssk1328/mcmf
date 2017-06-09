@@ -2,7 +2,7 @@
 
 import os
 
-p_values  = [2, 3, 4, 5, 7, 8, 9, 11, 13, 16]
+p_values  = [2, 3, 4, 5, 7, 8, 9, 11, 13, 16, 17, 19]
 
 for p in p_values:
 

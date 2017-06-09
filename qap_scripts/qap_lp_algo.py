@@ -8,8 +8,8 @@ import sys
 if len(sys.argv) >= 2:
     p = int(sys.argv[1])
     reportFileName = "report_lp_hungarian_fixedPG"+str(p)+".txt"
-    if (p < 2 or p > 16):
-        print "Size of PG has to be between 2 and 16\n"
+    if (p < 2 or p > 19):
+        print "Size of PG has to be between 2 and 19\n"
         exit()
 else : 
     print "Specify Size of PG to be evaluated with random mappings to be generated for mesh \n "
@@ -41,7 +41,10 @@ incidenceAll = {2  : [0,1,3],
                 9  : [0,1,3,9,27,49,56,61,77,81],
                 11 : [0,1,3,12,20,34,38,81,88,94,104,109],
                 13 : [0,1,3,16,23,28,42,76,82,86,119,137,154,175],
-                16 : [0,1,3,7,15,31,63,90,116,127,136,181,194,204,233,238,255]
+                16 : [0,1,3,7,15,31,63,90,116,127,136,181,194,204,233,238,255],
+                17 : [0,1,3,30,37,50,55,76,98,117,129,133,157,189,199,222,293,299],
+                19 : [0,1,19,28,96,118,151,153,176,202,240,254,290,296,300,307,337,361,366,369]
+
                 }
 
 incidence = incidenceAll[p] 
