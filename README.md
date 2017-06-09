@@ -9,7 +9,14 @@ The tasks can be broken down in to the following
 - mcmf.py uses the placment and using the flow information models this as a multi commodity flow problem
 - mcmf.py further generates the Lookup.bsv for logic to store this routing information
 
+- In /qap_scripts
+-- qap_lp_algo.py generates the initial data files of the form qap_data_pgx.txt
+-- sa_qap_mandar.cpp is the modified .cpp solver which uses the network specification from data file and use a simulated anneleaning approach to solve for optimal placement
+-- iteration and revision count are hardcoded in sa_qap_mandar.cpp file
+-- Result placement is stored in qap_sol_pgx.txt files to be read by mcmf solvers later
 
 Shashank Gangrade
+
 High Performance Computing Lab
+
 EE, IITB
