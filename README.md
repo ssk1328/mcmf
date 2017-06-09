@@ -13,10 +13,11 @@ The tasks can be broken down in to the following
 
 In /qap_scripts
 ---------------
-- qap_lp_algo.py generates the initial data files of the form qap_data_pgx.txt
+- qap_lp_algo.py generates the initial data files of the form qap_data_pg\<x\>.txt
 - sa_qap_mandar.cpp is the modified .cpp solver which uses the network specification from data file and use a simulated anneleaning approach to solve for optimal placement
 - iteration and revision count are hardcoded in sa_qap_mandar.cpp file
-- Result placement is stored in qap_sol_pgx.txt files to be read by mcmf solvers later
+- Result placement is stored in qap_sol_pg\<x\>.txt files to be read by mcmf solvers later
+- For example for p=2, qap_data_pg2.txt has the data and qap_sol_pg2.txt has the solved location info
 
 Shashank Gangrade
 
