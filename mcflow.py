@@ -9,6 +9,7 @@ def read_placement_files () :
 		fileobj = open("qap_scripts/qap_sol_pg"+ str(p) +".txt")
 		file_string = fileobj.read()
 		placement_list = map(int, file_string.split())
+		placement_list = [x - 1 for x in placement_list]
 		placementAll[p] = placement_list
 		fileobj.close()
 
@@ -64,55 +65,69 @@ def init_commodity():
 
 	return commodities
 
+def get_commodity_src_dst (commodity) :
+	## Returns source and destination nodes for a commodity
+
+	index_s = commodity.index('s') + 1
+	index_d = commodity.index('d')
+	index_d1 = commodity.index('d') + 1
+	index_end = len(commodity)
+
+	src = int(commodity[index_s:index_d])
+	dest = int(commodity[index_d1:index_end])
+
+	return src , dest
+
+def get_node_proc_mesh (node):
+	index_p = node.index('p') + 1
+	index_m = node.index('m')
+	index_m1 = node.index('m') + 1
+	index_end = len(node)
+	proc_num = int ( node[index_p :index_m  ] )
+	mesh_num = int ( node[index_m1:index_end] )
+	return proc_num, mesh_num
+
+
 def init_nodes():
 	nodes = [] # start with empty list for nodes
 
 	for i in range(len(placement)):
-		string = 'p'+str(placement[i])+'m'+str(i)
+		string = 'p'+str(i)+'m'+str(placement[i])
 		nodes.append(string)
 	return nodes
+
 
 def init_inflow():
 	inflow = {} # start with empty dictionary for inflow specification
 
 	for i in commodities:
-
-		index_s = i.index('s') + 1
-		index_d = i.index('d')
-		index_d1 = i.index('d') + 1
-		index_end = len(i)
-
-		src = int(i[index_s:index_d])
-		dest = int(i[index_d1:index_end])
-
+		src , dest = get_commodity_src_dst(i)
 		for j in nodes:
-
-			n_index_p = j.index('p')
-			n_index_m = j.index('m')
-
-			p_num = j[n_index_p:n_index_m]
-
-			if   p_num == 'p'+str(src):
+			p_num , m_num  = get_node_proc_mesh (j)
+			if   p_num == src:
 				inflow[(i, j)] = PACK_LENGTH 
-			elif p_num == 'p'+str(dest):
+			elif p_num == dest:
 				inflow[(i, j)] = -PACK_LENGTH
 			else :
 				inflow[(i, j)] = 0 
-
 	return inflow
+
+def get_node(mesh_num):
+	"Outputs the node string for a given location in mesh, using the placement list"
+	proc_num = placement.index(mesh_num)
+	return 'p'+str(proc_num)+'m'+str(mesh_num) 
 
 def init_arc_list():
 	arc = []
 	for i in range(numMeshnodes):
 		if i >= meshEdge : #up
-			arc.append(( 'p'+str(placement[i])+'m'+str(i), 'p'+ str(placement[i-meshEdge]) +'m'+str(i-meshEdge)))
+			arc.append( ( get_node( i ) , get_node (i-meshEdge) ) )
 		if i%meshEdge > 0 : #left
-			arc.append(( 'p'+str(placement[i])+'m'+str(i), 'p'+ str(placement[i-1]) +'m'+str(i-1)))
+			arc.append( ( get_node( i ) , get_node (i-1) ) )
 		if i < numMeshnodes - meshEdge :  # down
-			arc.append(( 'p'+str(placement[i])+'m'+str(i), 'p'+ str(placement[i+meshEdge]) +'m'+str(i+meshEdge)))
+			arc.append( ( get_node( i ) , get_node (i+meshEdge) ) )
 		if i%meshEdge < meshEdge-1 :  # right
-			arc.append(( 'p'+str(placement[i])+'m'+str(i), 'p'+ str(placement[i+1]) +'m'+str(i+1)))
-
+			arc.append( ( get_node( i ) , get_node (i+1) ) )
 	return arc
 
 def init_cost():
@@ -126,8 +141,13 @@ def init_cost():
 	return cost
 
 # ------------------------------------------------------------------------------------------------------------------ #
-# MAIN SCRIPT STARTS HERE 
 # ------------------------------------------------------------------------------------------------------------------ #
+#
+# MAIN SCRIPT STARTS HERE 
+# 
+# ------------------------------------------------------------------------------------------------------------------ #
+# ------------------------------------------------------------------------------------------------------------------ #
+
 
 p = 2	# Size of pg, this was specified from command line
 p_values  = [2, 3, 4, 5, 7, 8, 9, 11, 13, 16, 17, 19]
@@ -150,6 +170,8 @@ PACK_LENGTH = 8;
 ## This has to be changed to get a feasible soluton usually
 CAPACITY_CONST = 16;
 
+MAX = sys.maxsize
+
 incidenceAll = {2  : [0,1,3], 
                 3  : [0,1,3,9],               
                 4  : [0,1,4,14,16],           
@@ -170,8 +192,10 @@ incidence = incidenceAll[p]
 placementAll = read_placement_files()
 placement = placementAll[p]
 print "placement", placement
+## This means that ith value in list is location of ith processor
+
 ## 2: [8, 4, 7, 1, 5, 2, 0, 6, 3] , TODO: Fix this
-placement = [8, 4, 7, 1, 5, 2, 0, 6, 3] 
+# placement = [8, 4, 7, 1, 5, 2, 0, 6, 3] 
 ## This means that at the ith location in mesh we put up the placement[i]th processor
 ## Example here processor 8 is placed at 0th location in mesh
 ## Example here processor 4 is placed at 1st location in mesh
@@ -180,17 +204,17 @@ placement = [8, 4, 7, 1, 5, 2, 0, 6, 3]
 ## In the list generated, the ith value in the list is the position of ith processor in mesh
 
 
-dependency = getDependencyList()
-commodities = init_commodity()
-nodes = init_nodes()
-inflow = init_inflow()
-arc = init_arc_list()
+dependency = getDependencyList()	# This is the equvalent of data flow graph, here generated for the MatrixVector Application
+commodities = init_commodity()		# Initiate list of commodity, data structure for lp, of the form 's2d4' source processor 2, destination 4
+nodes = init_nodes()				# Initiate list of nodes, data structure for lp, of the form 'p2m4' processor 2 placed at mesh loc 4
+inflow = init_inflow()				# Specify source and destination for each commodity
+arc = init_arc_list()				# List of arc tuples generated from mesh network specification
 
 multi_dict = {}
 for i in arc:
 	multi_dict[i] =  CAPACITY_CONST
 
-arcs, capacity = multidict(multi_dict)
+arcs, capacity = multidict(multi_dict)	# Initiate arc and capacity data structures for lp 
 cost = init_cost()
 
 m = Model('netflow')
@@ -216,66 +240,38 @@ m.optimize()
 # Print solution
 if m.status == GRB.Status.OPTIMAL:
     solution = m.getAttr('x', flow)
-    for h in commodities:
-        print('\nOptimal flows for %s:' % h)
-        for i,j in arcs:
-            if solution[h,i,j] > 0:
-                print('%s -> %s: %g' % (i, j, solution[h,i,j]))
+#    for h in commodities:
+#        print('\nOptimal flows for %s:' % h)
+#        for i,j in arcs:
+#            if solution[h,i,j] > 0:
+#                print('%s -> %s: %g' % (i, j, solution[h,i,j]))
 
-    print "Solution:"
-    print "Solution type:",
-    print type(solution)
-    print len(solution)
-
-arc_solution = copy.copy(solution)
-
-arc_list = []
-# add info about convention in ths data structure
+#    print "Solution:"
+#    print "Solution type:",
+#    print type(solution)
+#    print len(solution)
 
 def check_flow ( commodity ):
-	minimum_flow = 9999 # supposed to be infinity
+	minimum_flow = MAX # supposed to be infinity
 
 	for i,j in arcs:
-		if (arc_solution[commodity, i, j] > 0) & (arc_solution[commodity, i, j]  < minimum_flow) :
+		if (arc_solution[commodity, i, j] > 0) & (arc_solution[commodity, i, j] < minimum_flow) :
 			minimum_flow = arc_solution[commodity, i, j]
 
-	if minimum_flow == 9999:	# Means no non-zero flow was found
+	if minimum_flow == MAX:	# Means no non-zero flow was found
 		minimum_flow = 0
 
 	return minimum_flow
 
 def get_src_dst (commodity) :
-	## Returns source and destination nodes for a commodity
-
-	index_s = commodity.index('s') + 1
-	index_d = commodity.index('d')
-	index_d1 = commodity.index('d') + 1
-	index_end = len(commodity)
-
-	src = int(commodity[index_s:index_d])
-	dest = int(commodity[index_d1:index_end])
-
-#	print "In get_src_dst function:"
-#	print "For commodity:", commodity
-
-#	print "Source and Destination processor ids are respectively"
-
+	## Returns source and destination nodes (in string form) for a commodity
+	src , dest = get_commodity_src_dst(commodity)
 	for j in nodes:
-		n_index_p = j.index('p')+1
-		n_index_m = j.index('m')
-
-		p_num = int(j[n_index_p:n_index_m])
-
-#		print "Nodes is:", j
-#		print "p_num is:", p_num
-		
+		p_num , m_num  = get_node_proc_mesh (j)
 		if src == p_num :
 			src_nd = j
-
 		if dest == p_num :
 			dest_nd = j
-
-
 	return src_nd , dest_nd
 
 def get_next_node (commodity, previous_node):
@@ -302,78 +298,73 @@ def get_next_node (commodity, previous_node):
 #	print "min_dst before return of function", min_dst
 	return min_dst
 
+def init_arc_list(arc_solution):
+	arc_list = []
+	# arc_list [3]  = ['p0m6', 'p4m4', 8.0, ['p0m6', 'p1m3', 'p7m0', 'p8m1', 'p4m4']]
+	# arc_list[arc_id] = [ src_node, dest_node, count, path_list]
 
-print ""
-print ""
-print "Arc solutions start from here"
+	for h in commodities:
+		src_node, dest_node = get_src_dst(h)
+		while check_flow(h)>0 :
+			min_flow = check_flow(h)
+			path_list = []
+			path_list.append(src_node)
+			
+			prev_node = src_node
+			next_node = src_node	# Initiating
 
-for h in commodities:
-#	print "Addition of arc info for commodity:", h
-	src_node, dest_node = get_src_dst(h)
+			while (next_node != dest_node ):
+	#			print "Prev Node is:" , prev_node
+				next_node = get_next_node(h, prev_node)
+	#			print "Next node is;" , next_node
+				path_list.append(next_node)
+	#			print path_list
+				arc_solution[h, prev_node, next_node] = arc_solution[h, prev_node, next_node]  - min_flow 
+				prev_node = next_node
+	#		print "Outside while now"
 
-#	print "Source Node: ", src_node
-#	print "Destination Node: ", dest_node
+			path_length = len(path_list)
+			path_source = path_list[0]
+			path_dest = path_list[path_length-1]
 
-	while check_flow(h)>0 :
-		min_flow = check_flow(h)
-#		print "Min Flow Value is:" , min_flow
-		path_list = []
-		path_list.append(src_node)
-		
-		prev_node = src_node
-		next_node = src_node
+			arc_list.append([ path_source, path_dest, min_flow, path_list ])
 
-		while (next_node != dest_node ):
-#			print "Prev Node is:" , prev_node
-			next_node = get_next_node(h, prev_node)
-#			print "Next node is;" , next_node
-			path_list.append(next_node)
-#			print path_list
-			arc_solution[h, prev_node, next_node] = arc_solution[h, prev_node, next_node]  - min_flow 
+	#	print "Commodity done:", h
+	#	print ""
+	return arc_list
 
-			prev_node = next_node
+arc_solution = copy.copy(solution)
 
-#		print "Outside while now"
+print "############################################################ "
+print "------------------------------------------------------------ "
+print "Populating arc list here"
+print "------------------------------------------------------------ "
+print "############################################################ "
 
-		path_length = len(path_list)
-		path_source = path_list[0]
-		path_dest = path_list[path_length-1]
+arc_list = init_arc_list(arc_solution)
 
-		arc_list.append([ path_source, path_dest, min_flow, path_list ])
-
-#	print "Commodity done:", h
-#	print ""
-
-
-
-print "Arc_list generated:"
+print "############################################################ "
+print "------------------------------------------------------------ "
+print "Arc_list generated: "
+print "------------------------------------------------------------ "
+print "############################################################ "
 
 for j in range(len(arc_list)):
 	print "arc_id", j ,
 	print ":",
 	print arc_list[j]
 
-
 print "Lets populate data structure at source:"
 
-
-print ""
 print "**********************************************"
 print "PACKET SPECIFICATION AT INPUT NODES"
 print "**********************************************"
-for j in nodes:
-	print ""
-	print "Input packet specifications at node:", j
 
-	for arc_id in range (len(arc_list)):
-		if arc_list[arc_id][0]== j :
-			print "For Destination: ", arc_list[arc_id][1] ,
-			print "arc_id is", arc_id, 
-			print "count is", arc_list[arc_id][2]
-
-## ***************************************************** ##
+## *************************************************************** ##
+## --------------------------------------------------------------- ##
 ## FILE WRITING STARTS HERE
-## ***************************************************** ##
+## --------------------------------------------------------------- ##
+## *************************************************************** ##
 
 filename = "Lookup.bsv"
 f = open(filename, 'w')
@@ -386,24 +377,21 @@ f.write("\n")
 f.write("function NoCArcId lookupNoCArcId(ProcID srcProcId, ProcID destProcID);\n")
 
 for j in nodes:
-
-	index0 = j.index('p')+1
-	index1 = j.index('m')
-	pnum = j[index0:index1]
-
-	f.write("  if (srcProcId == " + pnum + ") begin\n")	
+	pnum, mnum = get_node_proc_mesh(j)
+	f.write("  if (srcProcId == " + str(pnum) + ") begin\n")	
 
 	for arc_id in range (len(arc_list)):
 		if arc_list[arc_id][0]== j :
 			dest_node = arc_list[arc_id][1]
-
-			index_0 = dest_node.index('p')+1
-			index_1 = dest_node.index('m')
-			pnum_0 = dest_node[index_0:index_1]
+			pnum_0, mnum_0 = get_node_proc_mesh(dest_node)
 
 			ret_arc_id = str(arc_id)
 
-			f.write("    if(destProcID == "+ pnum_0 +") return " + ret_arc_id + ";\n")
+			print "For Destination: ", arc_list[arc_id][1] ,
+			print "arc_id is", arc_id, 
+			print "count is", arc_list[arc_id][2]
+
+			f.write("    if(destProcID == "+ str(pnum_0) +") return " + ret_arc_id + ";\n")
 #	f.write("    else return 0;\n")
 	f.write("  end\n")
 
@@ -432,9 +420,7 @@ for j in nodes:
 	print ""
 	print "Packet routing direction at node:", j
 
-	index0 = j.index('m')+1
-	index1 = len(j)
-	mesh_num = int(j[index0:index1])
+	proc_num, mesh_num = get_node_proc_mesh(j)
 
 	mesh_row = int(mesh_num/meshEdge)
 	mesh_col = mesh_num%meshEdge
@@ -488,10 +474,8 @@ f.write("// This is device placement generated from the qap solver used before h
 f.write("function MeshID lookupNoCAddr(ProcID currProcId); \n")
 f.write("  case (currProcId)\n")
 
-for i in range(numCores):
-	for j in range(len(placement)):
-		if placement[j] == i :
-			f.write("    "+ str(i) + ": return " + str(j) + "; \n")
+for i in range(numCores):	# i is processor_id
+	f.write("    "+ str(i) + ": return " + str(placement[i]) + "; \n")
 
 
 f.write("  endcase \n")
