@@ -3421,3 +3421,24 @@ Gurobi 7.0.2 (mac64, Python) logging started Fri Jun 16 16:32:29 2017
 
 Gurobi 7.0.2 (mac64, Python) logging started Fri Jun 16 16:52:32 2017
 
+
+Gurobi 7.0.2 (mac64, Python) logging started Fri Jun 16 20:22:18 2017
+
+Changed value of parameter LogToConsole to 0
+   Prev: 1  Min: 0  Max: 1  Default: 1
+Optimize a model with 276 rows, 672 columns and 2016 nonzeros
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+00]
+  Objective range  [1e+00, 1e+00]
+  Bounds range     [0e+00, 0e+00]
+  RHS range        [8e+00, 8e+02]
+Presolve removed 28 rows and 0 columns
+Presolve time: 0.00s
+Presolved: 248 rows, 672 columns, 1904 nonzeros
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    0.0000000e+00   4.480000e+02   0.000000e+00      0s
+      75    3.5200000e+02   0.000000e+00   0.000000e+00      0s
+
+Solved in 75 iterations and 0.00 seconds
+Optimal objective  3.520000000e+02

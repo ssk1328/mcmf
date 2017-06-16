@@ -7,3 +7,4 @@ Runtime for pg:8,  and numMeshnodes:81  is 1.67257595062    in seconds
 Runtime for pg:9,  and numMeshnodes:100 is 4.43547511101    in seconds 
 Runtime for pg:11, and numMeshnodes:144 is 16.5353329182    in seconds 
 Runtime for pg:13, and numMeshnodes:196 is 114.062127113    in seconds
+Runtime for pg:2, and numMeshnodes:9 is 0.00202012062073 in seconds 
