@@ -140,16 +140,26 @@ def init_cost():
 			cost[tup] = 1
 	return cost
 
+# ****************************************************************************************************************** #
 # ------------------------------------------------------------------------------------------------------------------ #
-# ------------------------------------------------------------------------------------------------------------------ #
-#
+# 
 # MAIN SCRIPT STARTS HERE 
 # 
 # ------------------------------------------------------------------------------------------------------------------ #
-# ------------------------------------------------------------------------------------------------------------------ #
+# ****************************************************************************************************************** #
 
+######### GETTING PG SIZE FROM COMMAND LINE ############
+         
+if len(sys.argv) >= 2:
+    p = int(sys.argv[1])
+    reportFileName = "report_lp_hungarian_fixedPG"+str(p)+".txt"
+    if (p < 2 or p > 19):
+        print "Size of PG has to be between 2 and 19\n"
+        exit()
+else : 
+    print "Specify Size of PG to be evaluated with random mappings to be generated for mesh \n "
+    exit()
 
-p = 2	# Size of pg, this was specified from command line
 p_values  = [2, 3, 4, 5, 7, 8, 9, 11, 13, 16, 17, 19]
 
 numPGnodes = p*p +p +1
@@ -168,7 +178,7 @@ PACK_LENGTH = 8;
 
 ## This is the fixed capacity for all arcs
 ## This has to be changed to get a feasible soluton usually
-CAPACITY_CONST = 16;
+CAPACITY_CONST = 800;
 
 MAX = sys.maxsize
 
@@ -203,7 +213,6 @@ print "placement", placement
 ## Actual output from sa_qap is different 
 ## In the list generated, the ith value in the list is the position of ith processor in mesh
 
-
 dependency = getDependencyList()	# This is the equvalent of data flow graph, here generated for the MatrixVector Application
 commodities = init_commodity()		# Initiate list of commodity, data structure for lp, of the form 's2d4' source processor 2, destination 4
 nodes = init_nodes()				# Initiate list of nodes, data structure for lp, of the form 'p2m4' processor 2 placed at mesh loc 4
@@ -224,12 +233,12 @@ flow = m.addVars(commodities, arcs, obj=cost, name="flow")
 
 # Arc capacity constraints
 m.addConstrs(
-    (flow.sum('*',i,j) <= capacity[i,j] for i,j in arcs), "cap")
+	(flow.sum('*',i,j) <= capacity[i,j] for i,j in arcs), "cap")
 
 # Flow conservation constraints
 m.addConstrs(
-    (flow.sum(h,'*',j) + inflow[h,j] == flow.sum(h,j,'*')
-    for h in commodities for j in nodes), "node")
+	(flow.sum(h,'*',j) + inflow[h,j] == flow.sum(h,j,'*')
+	for h in commodities for j in nodes), "node")
 
 # Dont print log to console
 m.Params.LogToConsole = 0
@@ -237,9 +246,16 @@ m.Params.LogToConsole = 0
 # Compute optimal solution
 m.optimize()
 
+filename0 = "Optimize_Runtimes.txt"
+f0 = open(filename0, 'a')
+
 # Print solution
 if m.status == GRB.Status.OPTIMAL:
-    solution = m.getAttr('x', flow)
+	print " Runtime printed here:"
+	runtime = str(m.Runtime)
+	solution = m.getAttr('x', flow)
+
+	f0.write( "Runtime for pg:" + str(p) + ", and numMeshnodes:" + str(numMeshnodes) + " is " + runtime + " in seconds \n" )
 #    for h in commodities:
 #        print('\nOptimal flows for %s:' % h)
 #        for i,j in arcs:
@@ -250,6 +266,8 @@ if m.status == GRB.Status.OPTIMAL:
 #    print "Solution type:",
 #    print type(solution)
 #    print len(solution)
+
+f0.close()
 
 def check_flow ( commodity ):
 	minimum_flow = MAX # supposed to be infinity
@@ -275,13 +293,9 @@ def get_src_dst (commodity) :
 	return src_nd , dest_nd
 
 def get_next_node (commodity, previous_node):
-
-#	print " "
-#	print "Inside get_next_node function"
-	min_val = 9999
-
+	''' Get the next node which has minimum flow'''
+	min_val = MAX
 #	print "previous_node is ", previous_node
-
 	for x,y in arcs:
 		if (x==previous_node):
 #			print 'x is', x
@@ -335,27 +349,16 @@ def init_arc_list(arc_solution):
 
 arc_solution = copy.copy(solution)
 
-print "############################################################ "
-print "------------------------------------------------------------ "
 print "Populating arc list here"
-print "------------------------------------------------------------ "
-print "############################################################ "
-
 arc_list = init_arc_list(arc_solution)
-
-print "############################################################ "
-print "------------------------------------------------------------ "
 print "Arc_list generated: "
-print "------------------------------------------------------------ "
-print "############################################################ "
 
 for j in range(len(arc_list)):
 	print "arc_id", j ,
 	print ":",
 	print arc_list[j]
 
-print "Lets populate data structure at source:"
-
+# Populating data-structures at source node
 print "**********************************************"
 print "PACKET SPECIFICATION AT INPUT NODES"
 print "**********************************************"
@@ -387,6 +390,7 @@ for j in nodes:
 
 			ret_arc_id = str(arc_id)
 
+			print "For Source ", arc_list[arc_id][0] ,
 			print "For Destination: ", arc_list[arc_id][1] ,
 			print "arc_id is", arc_id, 
 			print "count is", arc_list[arc_id][2]
@@ -441,8 +445,6 @@ for j in nodes:
 					current_node_in_path = arc_path[i]
 					next_node_in_path = arc_path[i+1]
 					
-
-
 					curr_index_m = current_node_in_path.index('m')
 					curr_index_last = len(current_node_in_path)
 
