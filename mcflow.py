@@ -435,10 +435,7 @@ f.write("\n")
 
 f.write("// Lookup function for destination node at each mesh node corresponding to the arc id and source mesh \n")
 f.write("function String lookupArcDest ( NoCAddr2D thisRowAddr, NoCAddr2D thisColAddr, NoCArcId arc_index); \n")
-
-
-f.write ("endfunction \n")
-
+f.write("  String dest_direction = \"N\";\n")  
 
 for j in nodes:
 
@@ -450,7 +447,7 @@ for j in nodes:
 	mesh_row = int(mesh_num/meshEdge)
 	mesh_col = mesh_num%meshEdge
 
-	f.write("  if ((thisRowAddr == " + str(mesh_row) + ") & (thisColAddr == " + str(mesh_col) + ")) begin \n")
+	f.write("  if ((thisRowAddr == " + str(mesh_row) + ") && (thisColAddr == " + str(mesh_col) + ")) begin \n")
 
 	for arc_id in range (len(arc_list)):
 		arc_path = arc_list[arc_id][3]
@@ -486,8 +483,9 @@ for j in nodes:
 
 				print "For arc_id: ", arc_id ,
 				print "direction is", direction  
-				f.write("    if (arc_index == "+ str(arc_id)+") return \"" + direction+"\"  ;\n")
+				f.write("    if (arc_index == "+ str(arc_id)+") dest_direction = \"" + direction+"\"  ;\n")
 	f.write("  end \n")
+f.write("  return dest_direction;\n")
 f.write("endfunction\n")
 
 

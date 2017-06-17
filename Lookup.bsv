@@ -57,97 +57,98 @@ endfunction: lookupNoCArcId
 
 // Lookup function for destination node at each mesh node corresponding to the arc id and source mesh 
 function String lookupArcDest ( NoCAddr2D thisRowAddr, NoCAddr2D thisColAddr, NoCArcId arc_index); 
-endfunction 
-  if ((thisRowAddr == 2) & (thisColAddr == 0)) begin 
-    if (arc_index == 0) return "N"  ;
-    if (arc_index == 1) return "E"  ;
-    if (arc_index == 2) return "E"  ;
-    if (arc_index == 3) return "E"  ;
-    if (arc_index == 6) return "H"  ;
-    if (arc_index == 15) return "H"  ;
-    if (arc_index == 17) return "H"  ;
-    if (arc_index == 24) return "H"  ;
+  String dest_direction = "N";
+  if ((thisRowAddr == 2) && (thisColAddr == 0)) begin 
+    if (arc_index == 0) dest_direction = "N"  ;
+    if (arc_index == 1) dest_direction = "E"  ;
+    if (arc_index == 2) dest_direction = "E"  ;
+    if (arc_index == 3) dest_direction = "E"  ;
+    if (arc_index == 6) dest_direction = "H"  ;
+    if (arc_index == 15) dest_direction = "H"  ;
+    if (arc_index == 17) dest_direction = "H"  ;
+    if (arc_index == 24) dest_direction = "H"  ;
   end 
-  if ((thisRowAddr == 1) & (thisColAddr == 0)) begin 
-    if (arc_index == 0) return "H"  ;
-    if (arc_index == 4) return "N"  ;
-    if (arc_index == 5) return "E"  ;
-    if (arc_index == 6) return "S"  ;
-    if (arc_index == 7) return "E"  ;
-    if (arc_index == 10) return "H"  ;
-    if (arc_index == 17) return "S"  ;
-    if (arc_index == 19) return "H"  ;
-    if (arc_index == 21) return "H"  ;
+  if ((thisRowAddr == 1) && (thisColAddr == 0)) begin 
+    if (arc_index == 0) dest_direction = "H"  ;
+    if (arc_index == 4) dest_direction = "N"  ;
+    if (arc_index == 5) dest_direction = "E"  ;
+    if (arc_index == 6) dest_direction = "S"  ;
+    if (arc_index == 7) dest_direction = "E"  ;
+    if (arc_index == 10) dest_direction = "H"  ;
+    if (arc_index == 17) dest_direction = "S"  ;
+    if (arc_index == 19) dest_direction = "H"  ;
+    if (arc_index == 21) dest_direction = "H"  ;
   end 
-  if ((thisRowAddr == 0) & (thisColAddr == 2)) begin 
-    if (arc_index == 4) return "H"  ;
-    if (arc_index == 8) return "S"  ;
-    if (arc_index == 9) return "S"  ;
-    if (arc_index == 10) return "W"  ;
-    if (arc_index == 11) return "S"  ;
-    if (arc_index == 14) return "H"  ;
-    if (arc_index == 23) return "H"  ;
-    if (arc_index == 25) return "H"  ;
+  if ((thisRowAddr == 0) && (thisColAddr == 2)) begin 
+    if (arc_index == 4) dest_direction = "H"  ;
+    if (arc_index == 8) dest_direction = "S"  ;
+    if (arc_index == 9) dest_direction = "S"  ;
+    if (arc_index == 10) dest_direction = "W"  ;
+    if (arc_index == 11) dest_direction = "S"  ;
+    if (arc_index == 14) dest_direction = "H"  ;
+    if (arc_index == 23) dest_direction = "H"  ;
+    if (arc_index == 25) dest_direction = "H"  ;
   end 
-  if ((thisRowAddr == 2) & (thisColAddr == 1)) begin 
-    if (arc_index == 1) return "H"  ;
-    if (arc_index == 2) return "E"  ;
-    if (arc_index == 3) return "N"  ;
-    if (arc_index == 8) return "H"  ;
-    if (arc_index == 12) return "N"  ;
-    if (arc_index == 13) return "E"  ;
-    if (arc_index == 14) return "E"  ;
-    if (arc_index == 15) return "W"  ;
-    if (arc_index == 18) return "H"  ;
-    if (arc_index == 24) return "W"  ;
-    if (arc_index == 27) return "H"  ;
+  if ((thisRowAddr == 2) && (thisColAddr == 1)) begin 
+    if (arc_index == 1) dest_direction = "H"  ;
+    if (arc_index == 2) dest_direction = "E"  ;
+    if (arc_index == 3) dest_direction = "N"  ;
+    if (arc_index == 8) dest_direction = "H"  ;
+    if (arc_index == 12) dest_direction = "N"  ;
+    if (arc_index == 13) dest_direction = "E"  ;
+    if (arc_index == 14) dest_direction = "E"  ;
+    if (arc_index == 15) dest_direction = "W"  ;
+    if (arc_index == 18) dest_direction = "H"  ;
+    if (arc_index == 24) dest_direction = "W"  ;
+    if (arc_index == 27) dest_direction = "H"  ;
   end 
-  if ((thisRowAddr == 1) & (thisColAddr == 1)) begin 
-    if (arc_index == 3) return "H"  ;
-    if (arc_index == 5) return "H"  ;
-    if (arc_index == 7) return "E"  ;
-    if (arc_index == 12) return "H"  ;
-    if (arc_index == 16) return "E"  ;
-    if (arc_index == 17) return "W"  ;
-    if (arc_index == 18) return "S"  ;
-    if (arc_index == 19) return "W"  ;
-    if (arc_index == 21) return "W"  ;
-    if (arc_index == 22) return "H"  ;
+  if ((thisRowAddr == 1) && (thisColAddr == 1)) begin 
+    if (arc_index == 3) dest_direction = "H"  ;
+    if (arc_index == 5) dest_direction = "H"  ;
+    if (arc_index == 7) dest_direction = "E"  ;
+    if (arc_index == 12) dest_direction = "H"  ;
+    if (arc_index == 16) dest_direction = "E"  ;
+    if (arc_index == 17) dest_direction = "W"  ;
+    if (arc_index == 18) dest_direction = "S"  ;
+    if (arc_index == 19) dest_direction = "W"  ;
+    if (arc_index == 21) dest_direction = "W"  ;
+    if (arc_index == 22) dest_direction = "H"  ;
   end 
-  if ((thisRowAddr == 1) & (thisColAddr == 2)) begin 
-    if (arc_index == 7) return "H"  ;
-    if (arc_index == 8) return "S"  ;
-    if (arc_index == 9) return "H"  ;
-    if (arc_index == 11) return "S"  ;
-    if (arc_index == 14) return "N"  ;
-    if (arc_index == 16) return "H"  ;
-    if (arc_index == 20) return "S"  ;
-    if (arc_index == 21) return "W"  ;
-    if (arc_index == 22) return "W"  ;
-    if (arc_index == 23) return "N"  ;
-    if (arc_index == 25) return "N"  ;
-    if (arc_index == 26) return "H"  ;
+  if ((thisRowAddr == 1) && (thisColAddr == 2)) begin 
+    if (arc_index == 7) dest_direction = "H"  ;
+    if (arc_index == 8) dest_direction = "S"  ;
+    if (arc_index == 9) dest_direction = "H"  ;
+    if (arc_index == 11) dest_direction = "S"  ;
+    if (arc_index == 14) dest_direction = "N"  ;
+    if (arc_index == 16) dest_direction = "H"  ;
+    if (arc_index == 20) dest_direction = "S"  ;
+    if (arc_index == 21) dest_direction = "W"  ;
+    if (arc_index == 22) dest_direction = "W"  ;
+    if (arc_index == 23) dest_direction = "N"  ;
+    if (arc_index == 25) dest_direction = "N"  ;
+    if (arc_index == 26) dest_direction = "H"  ;
   end 
-  if ((thisRowAddr == 2) & (thisColAddr == 2)) begin 
-    if (arc_index == 2) return "H"  ;
-    if (arc_index == 8) return "W"  ;
-    if (arc_index == 11) return "H"  ;
-    if (arc_index == 13) return "H"  ;
-    if (arc_index == 14) return "N"  ;
-    if (arc_index == 20) return "H"  ;
-    if (arc_index == 24) return "W"  ;
-    if (arc_index == 25) return "N"  ;
-    if (arc_index == 26) return "N"  ;
-    if (arc_index == 27) return "W"  ;
+  if ((thisRowAddr == 2) && (thisColAddr == 2)) begin 
+    if (arc_index == 2) dest_direction = "H"  ;
+    if (arc_index == 8) dest_direction = "W"  ;
+    if (arc_index == 11) dest_direction = "H"  ;
+    if (arc_index == 13) dest_direction = "H"  ;
+    if (arc_index == 14) dest_direction = "N"  ;
+    if (arc_index == 20) dest_direction = "H"  ;
+    if (arc_index == 24) dest_direction = "W"  ;
+    if (arc_index == 25) dest_direction = "N"  ;
+    if (arc_index == 26) dest_direction = "N"  ;
+    if (arc_index == 27) dest_direction = "W"  ;
   end 
-  if ((thisRowAddr == 0) & (thisColAddr == 0)) begin 
-    if (arc_index == 4) return "E"  ;
-    if (arc_index == 10) return "S"  ;
+  if ((thisRowAddr == 0) && (thisColAddr == 0)) begin 
+    if (arc_index == 4) dest_direction = "E"  ;
+    if (arc_index == 10) dest_direction = "S"  ;
   end 
-  if ((thisRowAddr == 0) & (thisColAddr == 1)) begin 
-    if (arc_index == 4) return "E"  ;
-    if (arc_index == 10) return "W"  ;
+  if ((thisRowAddr == 0) && (thisColAddr == 1)) begin 
+    if (arc_index == 4) dest_direction = "E"  ;
+    if (arc_index == 10) dest_direction = "W"  ;
   end 
+  return dest_direction;
 endfunction
 
 
