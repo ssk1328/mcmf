@@ -241,7 +241,7 @@ m.addConstrs(
 	for h in commodities for j in nodes), "node")
 
 # Dont print log to console
-m.Params.LogToConsole = 0
+# m.Params.LogToConsole = 0
 
 # Compute optimal solution
 m.optimize()
@@ -268,6 +268,8 @@ if m.status == GRB.Status.OPTIMAL:
 #    print len(solution)
 
 f0.close()
+
+print "Run Time Print done"
 
 def check_flow ( commodity ):
 	minimum_flow = MAX # supposed to be infinity
@@ -359,9 +361,6 @@ for j in range(len(arc_list)):
 	print arc_list[j]
 
 # Populating data-structures at source node
-print "**********************************************"
-print "PACKET SPECIFICATION AT INPUT NODES"
-print "**********************************************"
 
 ## *************************************************************** ##
 ## --------------------------------------------------------------- ##
@@ -372,36 +371,58 @@ print "**********************************************"
 filename = "Lookup.bsv"
 f = open(filename, 'w')
 
+print "**********************************************"
+print "PACKET SPECIFICATION AT INPUT NODES"
+print "**********************************************"
+
 f.write("import MemTypes::*;\n")
 f.write("import ProcTypes::*;\n")
 f.write("\n")
 f.write("// Python generated code which returns arc_id for each pair of source and destination of packets \n")
 f.write("\n")
 f.write("function NoCArcId lookupNoCArcId(ProcID srcProcId, ProcID destProcID);\n")
+f.write("  NoCArcId arc_id = 0;\n")
+f.write("\n")
+
+flag = True
 
 for j in nodes:
 	pnum, mnum = get_node_proc_mesh(j)
-	f.write("  if (srcProcId == " + str(pnum) + ") begin\n")	
 
-	for arc_id in range (len(arc_list)):
-		if arc_list[arc_id][0]== j :
-			dest_node = arc_list[arc_id][1]
-			pnum_0, mnum_0 = get_node_proc_mesh(dest_node)
+	if pnum < numCores :
 
-			ret_arc_id = str(arc_id)
+		if flag :
+			f.write("  if (srcProcId == " + str(pnum) + ") begin\n")
+			flag = False
+		else :		# Logic for if and else if in Bluespec code
+			f.write("  else if (srcProcId == " + str(pnum) + ") begin\n")
 
-			print "For Source ", arc_list[arc_id][0] ,
-			print "For Destination: ", arc_list[arc_id][1] ,
-			print "arc_id is", arc_id, 
-			print "count is", arc_list[arc_id][2]
+		flaga = True
+		for arc_id in range (len(arc_list)):
+			if arc_list[arc_id][0] == j :
+				dest_node = arc_list[arc_id][1]
+				pnum_0, mnum_0 = get_node_proc_mesh(dest_node)
 
-			f.write("    if(destProcID == "+ str(pnum_0) +") return " + ret_arc_id + ";\n")
-#	f.write("    else return 0;\n")
-	f.write("  end\n")
+				ret_arc_id = str(arc_id)
 
-f.write("  else return 0;\n")
+				print "For Source ", arc_list[arc_id][0] ,
+				print "For Destination: ", arc_list[arc_id][1] ,
+				print "arc_id is", arc_id, 
+				print "count is", arc_list[arc_id][2]
 
-f.write("endfunction\n")
+				if flaga :	
+					f.write("    if (destProcID == "+ str(pnum_0) +") arc_id = " + ret_arc_id + ";\n")
+					flaga = False
+				else :				# Logic for if and else if in Bluespec code
+					f.write("    else if(destProcID == "+ str(pnum_0) +") arc_id = " + ret_arc_id + ";\n")
+	#	f.write("    else arc_id = 0;\n")
+		f.write("  end\n")
+
+f.write("  else arc_id 0;\n")
+f.write("\n")
+f.write("return arc_id;\n")
+f.write("\n")
+f.write("endfunction: lookupNoCArcId\n")
 
 
 print ""
@@ -472,6 +493,7 @@ f.write("endfunction\n")
 
 f.write("\n")
 f.write("\n")
+
 f.write("// This is device placement generated from the qap solver used before hardcoded in mcmf.py file right now  \n")
 f.write("function MeshID lookupNoCAddr(ProcID currProcId); \n")
 f.write("  case (currProcId)\n")

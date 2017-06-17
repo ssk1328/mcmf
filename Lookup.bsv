@@ -4,54 +4,55 @@ import ProcTypes::*;
 // Python generated code which returns arc_id for each pair of source and destination of packets 
 
 function NoCArcId lookupNoCArcId(ProcID srcProcId, ProcID destProcID);
+  NoCArcId arc_id = 0;
+
   if (srcProcId == 0) begin
-    if(destProcID == 1) return 0;
-    if(destProcID == 3) return 1;
-    if(destProcID == 6) return 2;
-    if(destProcID == 4) return 3;
+    if (destProcID == 1) arc_id = 0;
+    else if(destProcID == 3) arc_id = 1;
+    else if(destProcID == 6) arc_id = 2;
+    else if(destProcID == 4) arc_id = 3;
   end
-  if (srcProcId == 1) begin
-    if(destProcID == 2) return 4;
-    if(destProcID == 4) return 5;
-    if(destProcID == 0) return 6;
-    if(destProcID == 5) return 7;
+  else if (srcProcId == 1) begin
+    if (destProcID == 2) arc_id = 4;
+    else if(destProcID == 4) arc_id = 5;
+    else if(destProcID == 0) arc_id = 6;
+    else if(destProcID == 5) arc_id = 7;
   end
-  if (srcProcId == 2) begin
-    if(destProcID == 3) return 8;
-    if(destProcID == 5) return 9;
-    if(destProcID == 1) return 10;
-    if(destProcID == 6) return 11;
+  else if (srcProcId == 2) begin
+    if (destProcID == 3) arc_id = 8;
+    else if(destProcID == 5) arc_id = 9;
+    else if(destProcID == 1) arc_id = 10;
+    else if(destProcID == 6) arc_id = 11;
   end
-  if (srcProcId == 3) begin
-    if(destProcID == 4) return 12;
-    if(destProcID == 6) return 13;
-    if(destProcID == 2) return 14;
-    if(destProcID == 0) return 15;
+  else if (srcProcId == 3) begin
+    if (destProcID == 4) arc_id = 12;
+    else if(destProcID == 6) arc_id = 13;
+    else if(destProcID == 2) arc_id = 14;
+    else if(destProcID == 0) arc_id = 15;
   end
-  if (srcProcId == 4) begin
-    if(destProcID == 5) return 16;
-    if(destProcID == 0) return 17;
-    if(destProcID == 3) return 18;
-    if(destProcID == 1) return 19;
+  else if (srcProcId == 4) begin
+    if (destProcID == 5) arc_id = 16;
+    else if(destProcID == 0) arc_id = 17;
+    else if(destProcID == 3) arc_id = 18;
+    else if(destProcID == 1) arc_id = 19;
   end
-  if (srcProcId == 5) begin
-    if(destProcID == 6) return 20;
-    if(destProcID == 1) return 21;
-    if(destProcID == 4) return 22;
-    if(destProcID == 2) return 23;
+  else if (srcProcId == 5) begin
+    if (destProcID == 6) arc_id = 20;
+    else if(destProcID == 1) arc_id = 21;
+    else if(destProcID == 4) arc_id = 22;
+    else if(destProcID == 2) arc_id = 23;
   end
-  if (srcProcId == 6) begin
-    if(destProcID == 0) return 24;
-    if(destProcID == 2) return 25;
-    if(destProcID == 5) return 26;
-    if(destProcID == 3) return 27;
+  else if (srcProcId == 6) begin
+    if (destProcID == 0) arc_id = 24;
+    else if(destProcID == 2) arc_id = 25;
+    else if(destProcID == 5) arc_id = 26;
+    else if(destProcID == 3) arc_id = 27;
   end
-  if (srcProcId == 7) begin
-  end
-  if (srcProcId == 8) begin
-  end
-  else return 0;
-endfunction
+  else arc_id 0;
+
+return arc_id;
+
+endfunction: lookupNoCArcId
 
 
 // Lookup function for destination node at each mesh node corresponding to the arc id and source mesh 
