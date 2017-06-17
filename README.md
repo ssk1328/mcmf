@@ -19,8 +19,7 @@ In /qap_scripts
 - Result placement is stored in qap_sol_pg\<x\>.txt files to be read by mcmf solvers later
 - For example for p=2, qap_data_pg2.txt has the data and qap_sol_pg2.txt has the solved location info
 
-Shashank Gangrade
-
-High Performance Computing Lab
-
-EE, IITB
+Shashank Gangrade  
+High Performance Computing Lab  
+Department of Electrical Engineering  
+IIT Bombay
