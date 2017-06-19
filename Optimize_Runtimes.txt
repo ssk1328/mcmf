@@ -18,3 +18,17 @@ Runtime for pg:2, and numMeshnodes:9 is 0.0022189617157 in seconds
 Runtime for pg:2, and numMeshnodes:9 is 0.00222611427307 in seconds 
 Runtime for pg:2, and numMeshnodes:9 is 0.00241303443909 in seconds 
 Runtime for pg:2, and numMeshnodes:9 is 0.00235891342163 in seconds 
+Runtime for pg:2, and numMeshnodes:9 is 0.0082950592041 in seconds 
+Runtime for pg:2, and numMeshnodes:9 is 0.00283217430115 in seconds 
+Runtime for pg:2, and numMeshnodes:9 is 0.00220489501953 in seconds 
+Runtime for pg:2, and numMeshnodes:9 is 0.00224900245667 in seconds 
+Runtime for pg:2, and numMeshnodes:9 is 0.00171899795532 in seconds 
+Runtime for pg:2, and numMeshnodes:9 is 0.00173592567444 in seconds 
+Runtime for pg:2, and numMeshnodes:9 is 0.00194883346558 in seconds 
+Runtime for pg:2, and numMeshnodes:9 is 0.00180506706238 in seconds 
+Runtime for pg:2, and numMeshnodes:9 is 0.00330281257629 in seconds 
+Runtime for pg:2, and numMeshnodes:9 is 0.00248289108276 in seconds 
+Runtime for pg:2, and numMeshnodes:9 is 0.0032320022583 in seconds 
+Runtime for pg:2, and numMeshnodes:9 is 0.00270295143127 in seconds 
+Runtime for pg:2, and numMeshnodes:9 is 0.00241780281067 in seconds 
+Runtime for pg:2, and numMeshnodes:9 is 0.00292015075684 in seconds 

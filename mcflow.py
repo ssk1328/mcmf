@@ -32,21 +32,24 @@ def getDependencyList():
 				dependency[i].append((i - j)% numCores)
 
 	return dependency
-	#dependency_out = []
-	# Inserting the connections between Point Node i and all the Line nodes it is connected to, except itself 
-	#for i in range(numCores):
-	#    dependency_out.append([])
-	#    for j in incidence:  
-	#        if (i != (i+ j)%numCores ):
-	#            dependency_out[i].append((j+i)%numCores) 
 
-	#dependency_in = []
+	dependency_out = []
+	# Inserting the connections between Point Node i and all the Line nodes it is connected to, except itself 
+	for i in range(numCores):
+	    dependency_out.append([])
+	    for j in incidence:  
+	        if (i != (i+ j)%numCores ):
+	            dependency_out[i].append((j+i)%numCores) 
+
+	dependency_in = []
 	# Inserting the connections between Line node i and all the Point nodes it is connected to, except itself
-	#for i in range(numCores):
-	#    dependency_in.append([])
-	#    for j in incidence:  
-	#        if (i != (i - j)% numCores ):
-	#            dependency_in[i].append((i - j)% numCores)
+	for i in range(numCores):
+	    dependency_in.append([])
+	    for j in incidence:  
+	        if (i != (i - j)% numCores ):
+	            dependency_in[i].append((i - j)% numCores)
+
+#	return dependency_in
 
 	# print "Data sent at t=0, x0, x1, ...: "
 	# print "Dependency_out: "
@@ -178,7 +181,7 @@ PACK_LENGTH = 8;
 
 ## This is the fixed capacity for all arcs
 ## This has to be changed to get a feasible soluton usually
-CAPACITY_CONST = 800;
+CAPACITY_CONST = 16;
 
 MAX = sys.maxsize
 
@@ -418,7 +421,7 @@ for j in nodes:
 	#	f.write("    else arc_id = 0;\n")
 		f.write("  end\n")
 
-f.write("  else arc_id 0;\n")
+f.write("  else arc_id = 0;\n")
 f.write("\n")
 f.write("return arc_id;\n")
 f.write("\n")
