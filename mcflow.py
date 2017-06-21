@@ -151,6 +151,7 @@ def init_cost():
 # ------------------------------------------------------------------------------------------------------------------ #
 # ****************************************************************************************************************** #
 
+
 ######### GETTING PG SIZE FROM COMMAND LINE ############
          
 if len(sys.argv) >= 2:
@@ -206,12 +207,6 @@ placementAll = read_placement_files()
 placement = placementAll[p]
 print "placement", placement
 ## This means that ith value in list is location of ith processor
-
-## 2: [8, 4, 7, 1, 5, 2, 0, 6, 3] , TODO: Fix this
-# placement = [8, 4, 7, 1, 5, 2, 0, 6, 3] 
-## This means that at the ith location in mesh we put up the placement[i]th processor
-## Example here processor 8 is placed at 0th location in mesh
-## Example here processor 4 is placed at 1st location in mesh
 
 ## Actual output from sa_qap is different 
 ## In the list generated, the ith value in the list is the position of ith processor in mesh
@@ -272,7 +267,10 @@ if m.status == GRB.Status.OPTIMAL:
 
 f0.close()
 
+
 print "Run Time Print done"
+
+# print axac
 
 def check_flow ( commodity ):
 	minimum_flow = MAX # supposed to be infinity
@@ -383,47 +381,68 @@ f.write("import ProcTypes::*;\n")
 f.write("\n")
 f.write("// Python generated code which returns arc_id for each pair of source and destination of packets \n")
 f.write("\n")
-f.write("function NoCArcId lookupNoCArcId(ProcID srcProcId, ProcID destProcID);\n")
+f.write("function NoCArcId lookupNoCArcId(ProcID srcProcId, ProcID destProcID, PacketLocation packLoc);\n")
 f.write("  NoCArcId arc_id = 0;\n")
 f.write("\n")
 
+count = 0 
 flag = True
 
-for j in nodes:
-	pnum, mnum = get_node_proc_mesh(j)
-
-	if pnum < numCores :
+for src in nodes:
+	pnum_src, mnum = get_node_proc_mesh(src)
+	
+	if pnum_src < numCores :
 
 		if flag :
-			f.write("  if (srcProcId == " + str(pnum) + ") begin\n")
+			f.write("  if (srcProcId == " + str(pnum_src) + ") begin\n")
 			flag = False
 		else :		# Logic for if and else if in Bluespec code
-			f.write("  else if (srcProcId == " + str(pnum) + ") begin\n")
+			f.write("  else if (srcProcId == " + str(pnum_src) + ") begin\n")
 
 		flaga = True
-		for arc_id in range (len(arc_list)):
-			if arc_list[arc_id][0] == j :
-				dest_node = arc_list[arc_id][1]
-				pnum_0, mnum_0 = get_node_proc_mesh(dest_node)
 
-				ret_arc_id = str(arc_id)
+	 	for dest in nodes:
+			pnum_dest, mnum = get_node_proc_mesh(dest)
 
-				print "For Source ", arc_list[arc_id][0] ,
-				print "For Destination: ", arc_list[arc_id][1] ,
-				print "arc_id is", arc_id, 
-				print "count is", arc_list[arc_id][2]
+			flagc = False
+			for arc_id in range(len(arc_list)):
+				if ( arc_list[arc_id][0] == src) & ( arc_list[arc_id][1] == dest ) :
+					flagc = True
 
-				if flaga :	
-					f.write("    if (destProcID == "+ str(pnum_0) +") arc_id = " + ret_arc_id + ";\n")
+			if flagc:
+				if flaga :
+					f.write("    if (destProcID == "+ str(pnum_dest) +") begin \n")
 					flaga = False
 				else :				# Logic for if and else if in Bluespec code
-					f.write("    else if(destProcID == "+ str(pnum_0) +") arc_id = " + ret_arc_id + ";\n")
-	#	f.write("    else arc_id = 0;\n")
-		f.write("  end\n")
+					f.write("    else if(destProcID == "+ str(pnum_dest) +") begin \n")
 
-f.write("  else arc_id = 0;\n")
-f.write("\n")
-f.write("return arc_id;\n")
+
+			flagb = True
+			for arc_id in range(len(arc_list)):
+				if ( arc_list[arc_id][0] == src) & ( arc_list[arc_id][1] == dest) :
+
+
+					count = count + arc_list[arc_id][2]
+					print "For Source ", arc_list[arc_id][0] ,
+					print "For Destination: ", arc_list[arc_id][1] ,
+					print "arc_id is", arc_id, 
+					print "upper limit is", count
+					ret_arc_id = str(arc_id)
+
+					if flagb:
+						f.write("      if ( packLoc < "+str(int(count))+") arc_id = " + ret_arc_id + "; \n")
+						flagb = False
+					else:
+						f.write("      else if ( packLoc < "+str(int (count))+") arc_id = " + ret_arc_id + "; \n")
+
+			count = 0
+			if flagc:
+				f.write("    end\n")
+				f.write("\n")
+		f.write("  end\n")
+		f.write("\n")
+
+f.write("  return arc_id;\n")
 f.write("\n")
 f.write("endfunction: lookupNoCArcId\n")
 

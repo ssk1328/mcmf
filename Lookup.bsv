@@ -3,54 +3,143 @@ import ProcTypes::*;
 
 // Python generated code which returns arc_id for each pair of source and destination of packets 
 
-function NoCArcId lookupNoCArcId(ProcID srcProcId, ProcID destProcID);
+function NoCArcId lookupNoCArcId(ProcID srcProcId, ProcID destProcID, PacketLocation packLoc);
   NoCArcId arc_id = 0;
 
   if (srcProcId == 0) begin
-    if (destProcID == 1) arc_id = 0;
-    else if(destProcID == 3) arc_id = 1;
-    else if(destProcID == 6) arc_id = 2;
-    else if(destProcID == 4) arc_id = 3;
-  end
-  else if (srcProcId == 1) begin
-    if (destProcID == 2) arc_id = 4;
-    else if(destProcID == 4) arc_id = 5;
-    else if(destProcID == 0) arc_id = 6;
-    else if(destProcID == 5) arc_id = 7;
-  end
-  else if (srcProcId == 2) begin
-    if (destProcID == 3) arc_id = 8;
-    else if(destProcID == 5) arc_id = 9;
-    else if(destProcID == 1) arc_id = 10;
-    else if(destProcID == 6) arc_id = 11;
-  end
-  else if (srcProcId == 3) begin
-    if (destProcID == 4) arc_id = 12;
-    else if(destProcID == 6) arc_id = 13;
-    else if(destProcID == 2) arc_id = 14;
-    else if(destProcID == 0) arc_id = 15;
-  end
-  else if (srcProcId == 4) begin
-    if (destProcID == 5) arc_id = 16;
-    else if(destProcID == 0) arc_id = 17;
-    else if(destProcID == 3) arc_id = 18;
-    else if(destProcID == 1) arc_id = 19;
-  end
-  else if (srcProcId == 5) begin
-    if (destProcID == 6) arc_id = 20;
-    else if(destProcID == 1) arc_id = 21;
-    else if(destProcID == 4) arc_id = 22;
-    else if(destProcID == 2) arc_id = 23;
-  end
-  else if (srcProcId == 6) begin
-    if (destProcID == 0) arc_id = 24;
-    else if(destProcID == 2) arc_id = 25;
-    else if(destProcID == 5) arc_id = 26;
-    else if(destProcID == 3) arc_id = 27;
-  end
-  else arc_id 0;
+    if (destProcID == 1) begin 
+      if ( packLoc < 8) arc_id = 0; 
+    end
 
-return arc_id;
+    else if(destProcID == 3) begin 
+      if ( packLoc < 8) arc_id = 1; 
+    end
+
+    else if(destProcID == 4) begin 
+      if ( packLoc < 8) arc_id = 3; 
+    end
+
+    else if(destProcID == 6) begin 
+      if ( packLoc < 8) arc_id = 2; 
+    end
+
+  end
+
+  else if (srcProcId == 1) begin
+    if (destProcID == 0) begin 
+      if ( packLoc < 8) arc_id = 6; 
+    end
+
+    else if(destProcID == 2) begin 
+      if ( packLoc < 8) arc_id = 4; 
+    end
+
+    else if(destProcID == 4) begin 
+      if ( packLoc < 8) arc_id = 5; 
+    end
+
+    else if(destProcID == 5) begin 
+      if ( packLoc < 8) arc_id = 7; 
+    end
+
+  end
+
+  else if (srcProcId == 2) begin
+    if (destProcID == 1) begin 
+      if ( packLoc < 8) arc_id = 10; 
+    end
+
+    else if(destProcID == 3) begin 
+      if ( packLoc < 8) arc_id = 8; 
+    end
+
+    else if(destProcID == 5) begin 
+      if ( packLoc < 8) arc_id = 9; 
+    end
+
+    else if(destProcID == 6) begin 
+      if ( packLoc < 8) arc_id = 11; 
+    end
+
+  end
+
+  else if (srcProcId == 3) begin
+    if (destProcID == 0) begin 
+      if ( packLoc < 8) arc_id = 15; 
+    end
+
+    else if(destProcID == 2) begin 
+      if ( packLoc < 8) arc_id = 14; 
+    end
+
+    else if(destProcID == 4) begin 
+      if ( packLoc < 8) arc_id = 12; 
+    end
+
+    else if(destProcID == 6) begin 
+      if ( packLoc < 8) arc_id = 13; 
+    end
+
+  end
+
+  else if (srcProcId == 4) begin
+    if (destProcID == 0) begin 
+      if ( packLoc < 8) arc_id = 17; 
+    end
+
+    else if(destProcID == 1) begin 
+      if ( packLoc < 8) arc_id = 19; 
+    end
+
+    else if(destProcID == 3) begin 
+      if ( packLoc < 8) arc_id = 18; 
+    end
+
+    else if(destProcID == 5) begin 
+      if ( packLoc < 8) arc_id = 16; 
+    end
+
+  end
+
+  else if (srcProcId == 5) begin
+    if (destProcID == 1) begin 
+      if ( packLoc < 8) arc_id = 21; 
+    end
+
+    else if(destProcID == 2) begin 
+      if ( packLoc < 8) arc_id = 23; 
+    end
+
+    else if(destProcID == 4) begin 
+      if ( packLoc < 8) arc_id = 22; 
+    end
+
+    else if(destProcID == 6) begin 
+      if ( packLoc < 8) arc_id = 20; 
+    end
+
+  end
+
+  else if (srcProcId == 6) begin
+    if (destProcID == 0) begin 
+      if ( packLoc < 8) arc_id = 24; 
+    end
+
+    else if(destProcID == 2) begin 
+      if ( packLoc < 8) arc_id = 25; 
+    end
+
+    else if(destProcID == 3) begin 
+      if ( packLoc < 8) arc_id = 27; 
+    end
+
+    else if(destProcID == 5) begin 
+      if ( packLoc < 8) arc_id = 26; 
+    end
+
+  end
+
+  return arc_id;
 
 endfunction: lookupNoCArcId
 
