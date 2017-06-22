@@ -154,15 +154,17 @@ def init_cost():
 
 ######### GETTING PG SIZE FROM COMMAND LINE ############
          
-if len(sys.argv) >= 2:
-    p = int(sys.argv[1])
-    reportFileName = "report_lp_hungarian_fixedPG"+str(p)+".txt"
-    if (p < 2 or p > 19):
-        print "Size of PG has to be between 2 and 19\n"
-        exit()
-else : 
-    print "Specify Size of PG to be evaluated with random mappings to be generated for mesh \n "
-    exit()
+#if len(sys.argv) >= 2:
+#    p = int(sys.argv[1])
+#    reportFileName = "report_lp_hungarian_fixedPG"+str(p)+".txt"
+#    if (p < 2 or p > 19):
+#        print "Size of PG has to be between 2 and 19\n"
+#        exit()
+#else : 
+#    print "Specify Size of PG to be evaluated with random mappings to be generated for mesh \n "
+#    exit()
+
+p =2
 
 p_values  = [2, 3, 4, 5, 7, 8, 9, 11, 13, 16, 17, 19]
 
@@ -244,16 +246,16 @@ m.addConstrs(
 # Compute optimal solution
 m.optimize()
 
-filename0 = "Optimize_Runtimes.txt"
-f0 = open(filename0, 'a')
+#filename0 = "Optimize_Runtimes.txt"
+#f0 = open(filename0, 'a')
 
 # Print solution
 if m.status == GRB.Status.OPTIMAL:
-	print " Runtime printed here:"
-	runtime = str(m.Runtime)
+#	print " Runtime printed here:"
+#	runtime = str(m.Runtime)
 	solution = m.getAttr('x', flow)
 
-	f0.write( "Runtime for pg:" + str(p) + ", and numMeshnodes:" + str(numMeshnodes) + " is " + runtime + " in seconds \n" )
+#	f0.write( "Runtime for pg:" + str(p) + ", and numMeshnodes:" + str(numMeshnodes) + " is " + runtime + " in seconds \n" )
 #    for h in commodities:
 #        print('\nOptimal flows for %s:' % h)
 #        for i,j in arcs:
@@ -265,12 +267,10 @@ if m.status == GRB.Status.OPTIMAL:
 #    print type(solution)
 #    print len(solution)
 
-f0.close()
+#f0.close()
 
 
-print "Run Time Print done"
-
-# print axac
+#print "Run Time Print done"
 
 def check_flow ( commodity ):
 	minimum_flow = MAX # supposed to be infinity
@@ -350,6 +350,224 @@ def init_arc_list(arc_solution):
 	#	print ""
 	return arc_list
 
+
+def printToFile(arc_list, filename):
+
+	filename = filename + ".bsv"
+	f = open(filename, 'w')
+
+	print "**********************************************"
+	print "PACKET SPECIFICATION AT INPUT NODES"
+	print "**********************************************"
+
+	f.write("import MemTypes::*;\n")
+	f.write("import ProcTypes::*;\n")
+	f.write("\n")
+	f.write("// Python generated code which returns arc_id for each pair of source and destination of packets \n")
+	f.write("\n")
+	f.write("function NoCArcId lookupNoCArcId(ProcID srcProcId, ProcID destProcID, PacketLocation packLoc);\n")
+	f.write("  NoCArcId arc_id = 0;\n")
+	f.write("\n")
+
+	count = 0 
+	flag = True
+
+	for src in nodes:
+		pnum_src, mnum = get_node_proc_mesh(src)
+		
+		if pnum_src < numCores :
+
+			if flag :
+				f.write("  if (srcProcId == " + str(pnum_src) + ") begin\n")
+				flag = False
+			else :		# Logic for if and else if in Bluespec code
+				f.write("  else if (srcProcId == " + str(pnum_src) + ") begin\n")
+
+			flaga = True
+
+		 	for dest in nodes:
+				pnum_dest, mnum = get_node_proc_mesh(dest)
+
+				flagc = False
+				for arc_id in range(len(arc_list)):
+					if ( arc_list[arc_id][0] == src) & ( arc_list[arc_id][1] == dest ) :
+						flagc = True
+
+				if flagc:
+					if flaga :
+						f.write("    if (destProcID == "+ str(pnum_dest) +") begin \n")
+						flaga = False
+					else :				# Logic for if and else if in Bluespec code
+						f.write("    else if(destProcID == "+ str(pnum_dest) +") begin \n")
+
+
+				flagb = True
+				for arc_id in range(len(arc_list)):
+					if ( arc_list[arc_id][0] == src) & ( arc_list[arc_id][1] == dest) :
+
+
+						count = count + arc_list[arc_id][2]
+						print "For Source ", arc_list[arc_id][0] ,
+						print "For Destination: ", arc_list[arc_id][1] ,
+						print "arc_id is", arc_id, 
+						print "upper limit is", count
+						ret_arc_id = str(arc_id)
+
+						if flagb:
+							f.write("      if ( packLoc < "+str(int(count))+") arc_id = " + ret_arc_id + "; \n")
+							flagb = False
+						else:
+							f.write("      else if ( packLoc < "+str(int (count))+") arc_id = " + ret_arc_id + "; \n")
+
+				count = 0
+				if flagc:
+					f.write("    end\n")
+					f.write("\n")
+			f.write("  end\n")
+			f.write("\n")
+
+	f.write("  return arc_id;\n")
+	f.write("\n")
+	f.write("endfunction: lookupNoCArcId\n")
+
+
+	print ""
+	print "**********************************************"
+	print "PACKET ROUTING AT INTERMEDIATE NODES"
+	print "**********************************************"
+
+	f.write("\n")
+	f.write("\n")
+
+	f.write("// Lookup function for destination node at each mesh node corresponding to the arc id and source mesh \n")
+	f.write("function String lookupArcDest ( NoCAddr2D thisRowAddr, NoCAddr2D thisColAddr, NoCArcId arc_index); \n")
+	f.write("  String dest_direction = \"N\";\n")  
+
+	for j in nodes:
+
+		print ""
+		print "Packet routing direction at node:", j
+
+		proc_num, mesh_num = get_node_proc_mesh(j)
+
+		mesh_row = int(mesh_num/meshEdge)
+		mesh_col = mesh_num%meshEdge
+
+		f.write("  if ((thisRowAddr == " + str(mesh_row) + ") && (thisColAddr == " + str(mesh_col) + ")) begin \n")
+
+		for arc_id in range (len(arc_list)):
+			arc_path = arc_list[arc_id][3]
+			len_arc_path = len(arc_path)
+			for i in range(len_arc_path):
+
+				if arc_path[i]==j:
+
+
+					if i == len_arc_path-1 :
+						direction = 'H'
+					else :
+						current_node_in_path = arc_path[i]
+						next_node_in_path = arc_path[i+1]
+						
+						curr_index_m = current_node_in_path.index('m')
+						curr_index_last = len(current_node_in_path)
+
+						next_index_m = next_node_in_path.index('m')
+						next_index_last = len(next_node_in_path)
+
+						current_node_mesh = int(current_node_in_path[curr_index_m+1:curr_index_last])
+						next_node_mesh = int(next_node_in_path[next_index_m+1:next_index_last])
+
+						if(next_node_mesh == current_node_mesh +1 ):
+							direction = 'E'
+						elif (next_node_mesh == current_node_mesh - 1 ):
+							direction = 'W'
+						elif ((next_node_mesh/3) == (current_node_mesh/3)+1):
+							direction = 'S'
+						elif ((next_node_mesh/3) == (current_node_mesh/3)-1):
+							direction = 'N'
+
+					print "For arc_id: ", arc_id ,
+					print "direction is", direction  
+					f.write("    if (arc_index == "+ str(arc_id)+") dest_direction = \"" + direction+"\"  ;\n")
+		f.write("  end \n")
+	f.write("  return dest_direction;\n")
+	f.write("endfunction\n")
+
+
+	f.write("\n")
+	f.write("\n")
+
+	f.write("// This is device placement generated from the qap solver used before hardcoded in mcmf.py file right now  \n")
+	f.write("function MeshID lookupNoCAddr(ProcID currProcId); \n")
+	f.write("  case (currProcId)\n")
+
+	for i in range(numCores):	# i is processor_id
+		f.write("    "+ str(i) + ": return " + str(placement[i]) + "; \n")
+
+
+	f.write("  endcase \n")
+	f.write("endfunction \n")
+	f.close()
+
+def get_node_from_mesh(mesh_num):
+
+	for i in range(len(placement)):
+		if placement[i] == mesh_num:
+			proc_num = i
+
+	node_op = 'p' + str(proc_num) +'m' + str(mesh_num)
+	return node_op
+
+
+def xypath_gen(src_mesh_num, dest_mesh_num):
+	pack = [src_mesh_num]
+
+	while (src_mesh_num != dest_mesh_num):
+
+		if(src_mesh_num%3 == dest_mesh_num%3):	# check if x is same
+
+			if(src_mesh_num/3 == dest_mesh_num/3): # check if y is same
+				pack.append(src_mesh_num)
+
+			else:
+				if(src_mesh_num/3 > dest_mesh_num/3):
+					src_mesh_num = src_mesh_num-3
+				elif(src_mesh_num/3 < dest_mesh_num/3):
+					src_mesh_num = src_mesh_num+3
+				pack.append(src_mesh_num)
+
+		else:	
+			if(src_mesh_num%3 > dest_mesh_num%3):
+				src_mesh_num = src_mesh_num-1
+			elif(src_mesh_num%3 < dest_mesh_num%3):
+				src_mesh_num = src_mesh_num+1
+			pack.append(src_mesh_num)
+	
+	return pack
+
+
+def init_xy_list():
+
+	arc_list = []
+	# arc_list [3]  = ['p0m6', 'p4m4', 8.0, ['p0m6', 'p1m3', 'p7m0', 'p8m1', 'p4m4']]
+	# arc_list[arc_id] = [ src_node, dest_node, count, path_list]
+
+	for h in commodities:
+		src_node, dest_node = get_src_dst(h)
+		path_list = []
+			
+		src_pnum, src_mnum = get_node_proc_mesh(src_node)
+		dest_pnum, dest_mnum = get_node_proc_mesh(dest_node)
+
+		mesh_list = xypath_gen(src_mnum, dest_mnum)
+
+		for i in mesh_list:
+			path_list.append(get_node_from_mesh(i) )
+		arc_list.append( [src_node, dest_node, PACK_LENGTH, path_list] )
+
+	return arc_list
+
 arc_solution = copy.copy(solution)
 
 print "Populating arc list here"
@@ -361,6 +579,15 @@ for j in range(len(arc_list)):
 	print ":",
 	print arc_list[j]
 
+print "Populating xy list here"
+xy_list = init_xy_list()
+print "X-Y List generated"
+
+for i in range(len(xy_list)):
+	print "arc_id", i ,
+	print ":",
+	print xy_list[i]
+
 # Populating data-structures at source node
 
 ## *************************************************************** ##
@@ -369,163 +596,8 @@ for j in range(len(arc_list)):
 ## --------------------------------------------------------------- ##
 ## *************************************************************** ##
 
-filename = "Lookup.bsv"
-f = open(filename, 'w')
 
-print "**********************************************"
-print "PACKET SPECIFICATION AT INPUT NODES"
-print "**********************************************"
-
-f.write("import MemTypes::*;\n")
-f.write("import ProcTypes::*;\n")
-f.write("\n")
-f.write("// Python generated code which returns arc_id for each pair of source and destination of packets \n")
-f.write("\n")
-f.write("function NoCArcId lookupNoCArcId(ProcID srcProcId, ProcID destProcID, PacketLocation packLoc);\n")
-f.write("  NoCArcId arc_id = 0;\n")
-f.write("\n")
-
-count = 0 
-flag = True
-
-for src in nodes:
-	pnum_src, mnum = get_node_proc_mesh(src)
-	
-	if pnum_src < numCores :
-
-		if flag :
-			f.write("  if (srcProcId == " + str(pnum_src) + ") begin\n")
-			flag = False
-		else :		# Logic for if and else if in Bluespec code
-			f.write("  else if (srcProcId == " + str(pnum_src) + ") begin\n")
-
-		flaga = True
-
-	 	for dest in nodes:
-			pnum_dest, mnum = get_node_proc_mesh(dest)
-
-			flagc = False
-			for arc_id in range(len(arc_list)):
-				if ( arc_list[arc_id][0] == src) & ( arc_list[arc_id][1] == dest ) :
-					flagc = True
-
-			if flagc:
-				if flaga :
-					f.write("    if (destProcID == "+ str(pnum_dest) +") begin \n")
-					flaga = False
-				else :				# Logic for if and else if in Bluespec code
-					f.write("    else if(destProcID == "+ str(pnum_dest) +") begin \n")
-
-
-			flagb = True
-			for arc_id in range(len(arc_list)):
-				if ( arc_list[arc_id][0] == src) & ( arc_list[arc_id][1] == dest) :
-
-
-					count = count + arc_list[arc_id][2]
-					print "For Source ", arc_list[arc_id][0] ,
-					print "For Destination: ", arc_list[arc_id][1] ,
-					print "arc_id is", arc_id, 
-					print "upper limit is", count
-					ret_arc_id = str(arc_id)
-
-					if flagb:
-						f.write("      if ( packLoc < "+str(int(count))+") arc_id = " + ret_arc_id + "; \n")
-						flagb = False
-					else:
-						f.write("      else if ( packLoc < "+str(int (count))+") arc_id = " + ret_arc_id + "; \n")
-
-			count = 0
-			if flagc:
-				f.write("    end\n")
-				f.write("\n")
-		f.write("  end\n")
-		f.write("\n")
-
-f.write("  return arc_id;\n")
-f.write("\n")
-f.write("endfunction: lookupNoCArcId\n")
-
-
-print ""
-print "**********************************************"
-print "PACKET ROUTING AT INTERMEDIATE NODES"
-print "**********************************************"
-
-f.write("\n")
-f.write("\n")
-
-f.write("// Lookup function for destination node at each mesh node corresponding to the arc id and source mesh \n")
-f.write("function String lookupArcDest ( NoCAddr2D thisRowAddr, NoCAddr2D thisColAddr, NoCArcId arc_index); \n")
-f.write("  String dest_direction = \"N\";\n")  
-
-for j in nodes:
-
-	print ""
-	print "Packet routing direction at node:", j
-
-	proc_num, mesh_num = get_node_proc_mesh(j)
-
-	mesh_row = int(mesh_num/meshEdge)
-	mesh_col = mesh_num%meshEdge
-
-	f.write("  if ((thisRowAddr == " + str(mesh_row) + ") && (thisColAddr == " + str(mesh_col) + ")) begin \n")
-
-	for arc_id in range (len(arc_list)):
-		arc_path = arc_list[arc_id][3]
-		len_arc_path = len(arc_path)
-		for i in range(len_arc_path):
-
-			if arc_path[i]==j:
-
-
-				if i == len_arc_path-1 :
-					direction = 'H'
-				else :
-					current_node_in_path = arc_path[i]
-					next_node_in_path = arc_path[i+1]
-					
-					curr_index_m = current_node_in_path.index('m')
-					curr_index_last = len(current_node_in_path)
-
-					next_index_m = next_node_in_path.index('m')
-					next_index_last = len(next_node_in_path)
-
-					current_node_mesh = int(current_node_in_path[curr_index_m+1:curr_index_last])
-					next_node_mesh = int(next_node_in_path[next_index_m+1:next_index_last])
-
-					if(next_node_mesh == current_node_mesh +1 ):
-						direction = 'E'
-					elif (next_node_mesh == current_node_mesh - 1 ):
-						direction = 'W'
-					elif ((next_node_mesh/3) == (current_node_mesh/3)+1):
-						direction = 'S'
-					elif ((next_node_mesh/3) == (current_node_mesh/3)-1):
-						direction = 'N'
-
-				print "For arc_id: ", arc_id ,
-				print "direction is", direction  
-				f.write("    if (arc_index == "+ str(arc_id)+") dest_direction = \"" + direction+"\"  ;\n")
-	f.write("  end \n")
-f.write("  return dest_direction;\n")
-f.write("endfunction\n")
-
-
-f.write("\n")
-f.write("\n")
-
-f.write("// This is device placement generated from the qap solver used before hardcoded in mcmf.py file right now  \n")
-f.write("function MeshID lookupNoCAddr(ProcID currProcId); \n")
-f.write("  case (currProcId)\n")
-
-for i in range(numCores):	# i is processor_id
-	f.write("    "+ str(i) + ": return " + str(placement[i]) + "; \n")
-
-
-f.write("  endcase \n")
-f.write("endfunction \n")
-f.close()
-
-
+printToFile(arc_list, "Lookup")
+printToFile(xy_list, "Lookupxy")
 
 
