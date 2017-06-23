@@ -269,9 +269,6 @@ if m.status == GRB.Status.OPTIMAL:
 
 #f0.close()
 
-
-#print "Run Time Print done"
-
 def check_flow ( commodity ):
 	minimum_flow = MAX # supposed to be infinity
 
