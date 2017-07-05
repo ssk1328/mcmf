@@ -17,10 +17,17 @@ Install gurobi following the steps mentioned here https://www.gurobi.com/documen
 - Validate the license key
 - Open gurobi shell to verify installation by $ gurobi.sh
 
+# Makefile
+$ make help
+To see all possible targets for makefile 
+
+$ make
+
+The default will clean all and generate a fresh mapping and routing solution and resultant bluespec files in /bsv
+
 # Generating Mapping results
 
-$ cd qap
-$ python qap_scripts.py
+$ make map
 
 this will do the following 
 - Python script qap_lp_algo.py generates the initial data files of the form qap_data_pg\<x\>.txt
@@ -32,15 +39,13 @@ this will do the following
 
 # Generating Routing results
 
-Run $ gurobi.sh mcflow.py
+$ make route
 
 This will generate resultant bluespec files in /bsv folder for both XY and Arc-Path Routing
 
 Get simulation results
 - Uncomment lines for runtime in mcflow and runtime for that run will append in /data/Optimize_Runtimes.txt 
-- Run mcflow_gencongestion.py to get model simulated congestion values for arc-path and XY routing
-
-
+- Run scripts/mcflow_gencongestion.py to get model simulated congestion values for arc-path and XY routing
 
 Shashank Gangrade  
 High Performance Computing Lab  
