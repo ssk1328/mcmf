@@ -16,13 +16,23 @@ map-clean:
 
 route-gen:
 	@echo "Generating blusespec files post routing in /bsv"
-	gurobi.sh mcflow.py
+	gurobi.sh mcflow.py -> console_dump
+	@echo "Route done, bluespec files stored in /bsv"
 
 route-clean: 
 	@echo "Clean routing generated bluespec files from /bsv"
 	rm -f bsv/Lookup*
 
 help:
+	@echo "    default"
+	@echo "        map route"
+
+	@echo "    route"
+	@echo "        route-clean route-gen"
+
+	@echo "    map"
+	@echo "        map-clean map-result"
+	
 	
 	@echo "    map-result"
 	@echo "        Generate mapping results as text files"

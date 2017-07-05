@@ -1,0 +1,331 @@
+placement [6, 3, 2, 7, 4, 5, 8, 0, 1]
+Optimize a model with 276 rows, 672 columns and 2016 nonzeros
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+00]
+  Objective range  [1e+00, 1e+00]
+  Bounds range     [0e+00, 0e+00]
+  RHS range        [8e+00, 2e+01]
+Presolve removed 28 rows and 0 columns
+Presolve time: 0.00s
+Presolved: 248 rows, 672 columns, 1904 nonzeros
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    0.0000000e+00   4.480000e+02   0.000000e+00      0s
+     117    3.8400000e+02   0.000000e+00   0.000000e+00      0s
+
+Solved in 117 iterations and 0.00 seconds
+Optimal objective  3.840000000e+02
+Populating arc list here
+Arc_list generated: 
+arc_id 0 : ['p0m6', 'p1m3', 8.0, ['p0m6', 'p1m3']]
+arc_id 1 : ['p0m6', 'p3m7', 8.0, ['p0m6', 'p3m7']]
+arc_id 2 : ['p0m6', 'p6m8', 8.0, ['p0m6', 'p3m7', 'p6m8']]
+arc_id 3 : ['p0m6', 'p4m4', 8.0, ['p0m6', 'p1m3', 'p7m0', 'p8m1', 'p4m4']]
+arc_id 4 : ['p1m3', 'p2m2', 8.0, ['p1m3', 'p7m0', 'p8m1', 'p2m2']]
+arc_id 5 : ['p1m3', 'p4m4', 8.0, ['p1m3', 'p4m4']]
+arc_id 6 : ['p1m3', 'p0m6', 8.0, ['p1m3', 'p0m6']]
+arc_id 7 : ['p1m3', 'p5m5', 8.0, ['p1m3', 'p4m4', 'p5m5']]
+arc_id 8 : ['p2m2', 'p3m7', 8.0, ['p2m2', 'p8m1', 'p4m4', 'p3m7']]
+arc_id 9 : ['p2m2', 'p5m5', 8.0, ['p2m2', 'p5m5']]
+arc_id 10 : ['p2m2', 'p1m3', 8.0, ['p2m2', 'p8m1', 'p7m0', 'p1m3']]
+arc_id 11 : ['p2m2', 'p6m8', 8.0, ['p2m2', 'p5m5', 'p6m8']]
+arc_id 12 : ['p3m7', 'p4m4', 8.0, ['p3m7', 'p4m4']]
+arc_id 13 : ['p3m7', 'p6m8', 8.0, ['p3m7', 'p6m8']]
+arc_id 14 : ['p3m7', 'p2m2', 8.0, ['p3m7', 'p4m4', 'p8m1', 'p2m2']]
+arc_id 15 : ['p3m7', 'p0m6', 8.0, ['p3m7', 'p0m6']]
+arc_id 16 : ['p4m4', 'p5m5', 8.0, ['p4m4', 'p5m5']]
+arc_id 17 : ['p4m4', 'p0m6', 8.0, ['p4m4', 'p1m3', 'p0m6']]
+arc_id 18 : ['p4m4', 'p3m7', 8.0, ['p4m4', 'p3m7']]
+arc_id 19 : ['p4m4', 'p1m3', 8.0, ['p4m4', 'p1m3']]
+arc_id 20 : ['p5m5', 'p6m8', 8.0, ['p5m5', 'p6m8']]
+arc_id 21 : ['p5m5', 'p1m3', 8.0, ['p5m5', 'p4m4', 'p8m1', 'p7m0', 'p1m3']]
+arc_id 22 : ['p5m5', 'p4m4', 8.0, ['p5m5', 'p4m4']]
+arc_id 23 : ['p5m5', 'p2m2', 8.0, ['p5m5', 'p2m2']]
+arc_id 24 : ['p6m8', 'p0m6', 8.0, ['p6m8', 'p3m7', 'p0m6']]
+arc_id 25 : ['p6m8', 'p2m2', 8.0, ['p6m8', 'p5m5', 'p2m2']]
+arc_id 26 : ['p6m8', 'p5m5', 8.0, ['p6m8', 'p5m5']]
+arc_id 27 : ['p6m8', 'p3m7', 8.0, ['p6m8', 'p3m7']]
+Populating xy list here
+X-Y List generated
+arc_id 0 : ['p0m6', 'p1m3', 8, ['p0m6', 'p1m3']]
+arc_id 1 : ['p0m6', 'p3m7', 8, ['p0m6', 'p3m7']]
+arc_id 2 : ['p0m6', 'p6m8', 8, ['p0m6', 'p3m7', 'p6m8']]
+arc_id 3 : ['p0m6', 'p4m4', 8, ['p0m6', 'p3m7', 'p4m4']]
+arc_id 4 : ['p1m3', 'p2m2', 8, ['p1m3', 'p4m4', 'p5m5', 'p2m2']]
+arc_id 5 : ['p1m3', 'p4m4', 8, ['p1m3', 'p4m4']]
+arc_id 6 : ['p1m3', 'p0m6', 8, ['p1m3', 'p0m6']]
+arc_id 7 : ['p1m3', 'p5m5', 8, ['p1m3', 'p4m4', 'p5m5']]
+arc_id 8 : ['p2m2', 'p3m7', 8, ['p2m2', 'p8m1', 'p4m4', 'p3m7']]
+arc_id 9 : ['p2m2', 'p5m5', 8, ['p2m2', 'p5m5']]
+arc_id 10 : ['p2m2', 'p1m3', 8, ['p2m2', 'p8m1', 'p7m0', 'p1m3']]
+arc_id 11 : ['p2m2', 'p6m8', 8, ['p2m2', 'p5m5', 'p6m8']]
+arc_id 12 : ['p3m7', 'p4m4', 8, ['p3m7', 'p4m4']]
+arc_id 13 : ['p3m7', 'p6m8', 8, ['p3m7', 'p6m8']]
+arc_id 14 : ['p3m7', 'p2m2', 8, ['p3m7', 'p6m8', 'p5m5', 'p2m2']]
+arc_id 15 : ['p3m7', 'p0m6', 8, ['p3m7', 'p0m6']]
+arc_id 16 : ['p4m4', 'p5m5', 8, ['p4m4', 'p5m5']]
+arc_id 17 : ['p4m4', 'p0m6', 8, ['p4m4', 'p1m3', 'p0m6']]
+arc_id 18 : ['p4m4', 'p3m7', 8, ['p4m4', 'p3m7']]
+arc_id 19 : ['p4m4', 'p1m3', 8, ['p4m4', 'p1m3']]
+arc_id 20 : ['p5m5', 'p6m8', 8, ['p5m5', 'p6m8']]
+arc_id 21 : ['p5m5', 'p1m3', 8, ['p5m5', 'p4m4', 'p1m3']]
+arc_id 22 : ['p5m5', 'p4m4', 8, ['p5m5', 'p4m4']]
+arc_id 23 : ['p5m5', 'p2m2', 8, ['p5m5', 'p2m2']]
+arc_id 24 : ['p6m8', 'p0m6', 8, ['p6m8', 'p3m7', 'p0m6']]
+arc_id 25 : ['p6m8', 'p2m2', 8, ['p6m8', 'p5m5', 'p2m2']]
+arc_id 26 : ['p6m8', 'p5m5', 8, ['p6m8', 'p5m5']]
+arc_id 27 : ['p6m8', 'p3m7', 8, ['p6m8', 'p3m7']]
+**********************************************
+PACKET SPECIFICATION AT INPUT NODES
+**********************************************
+For Source  p0m6 For Destination:  p1m3 arc_id is 0 upper limit is 8.0
+For Source  p0m6 For Destination:  p3m7 arc_id is 1 upper limit is 8.0
+For Source  p0m6 For Destination:  p4m4 arc_id is 3 upper limit is 8.0
+For Source  p0m6 For Destination:  p6m8 arc_id is 2 upper limit is 8.0
+For Source  p1m3 For Destination:  p0m6 arc_id is 6 upper limit is 8.0
+For Source  p1m3 For Destination:  p2m2 arc_id is 4 upper limit is 8.0
+For Source  p1m3 For Destination:  p4m4 arc_id is 5 upper limit is 8.0
+For Source  p1m3 For Destination:  p5m5 arc_id is 7 upper limit is 8.0
+For Source  p2m2 For Destination:  p1m3 arc_id is 10 upper limit is 8.0
+For Source  p2m2 For Destination:  p3m7 arc_id is 8 upper limit is 8.0
+For Source  p2m2 For Destination:  p5m5 arc_id is 9 upper limit is 8.0
+For Source  p2m2 For Destination:  p6m8 arc_id is 11 upper limit is 8.0
+For Source  p3m7 For Destination:  p0m6 arc_id is 15 upper limit is 8.0
+For Source  p3m7 For Destination:  p2m2 arc_id is 14 upper limit is 8.0
+For Source  p3m7 For Destination:  p4m4 arc_id is 12 upper limit is 8.0
+For Source  p3m7 For Destination:  p6m8 arc_id is 13 upper limit is 8.0
+For Source  p4m4 For Destination:  p0m6 arc_id is 17 upper limit is 8.0
+For Source  p4m4 For Destination:  p1m3 arc_id is 19 upper limit is 8.0
+For Source  p4m4 For Destination:  p3m7 arc_id is 18 upper limit is 8.0
+For Source  p4m4 For Destination:  p5m5 arc_id is 16 upper limit is 8.0
+For Source  p5m5 For Destination:  p1m3 arc_id is 21 upper limit is 8.0
+For Source  p5m5 For Destination:  p2m2 arc_id is 23 upper limit is 8.0
+For Source  p5m5 For Destination:  p4m4 arc_id is 22 upper limit is 8.0
+For Source  p5m5 For Destination:  p6m8 arc_id is 20 upper limit is 8.0
+For Source  p6m8 For Destination:  p0m6 arc_id is 24 upper limit is 8.0
+For Source  p6m8 For Destination:  p2m2 arc_id is 25 upper limit is 8.0
+For Source  p6m8 For Destination:  p3m7 arc_id is 27 upper limit is 8.0
+For Source  p6m8 For Destination:  p5m5 arc_id is 26 upper limit is 8.0
+
+**********************************************
+PACKET ROUTING AT INTERMEDIATE NODES
+**********************************************
+
+Packet routing direction at node: p0m6
+For arc_id:  0 direction is N
+For arc_id:  1 direction is E
+For arc_id:  2 direction is E
+For arc_id:  3 direction is N
+For arc_id:  6 direction is H
+For arc_id:  15 direction is H
+For arc_id:  17 direction is H
+For arc_id:  24 direction is H
+
+Packet routing direction at node: p1m3
+For arc_id:  0 direction is H
+For arc_id:  3 direction is N
+For arc_id:  4 direction is N
+For arc_id:  5 direction is E
+For arc_id:  6 direction is S
+For arc_id:  7 direction is E
+For arc_id:  10 direction is H
+For arc_id:  17 direction is S
+For arc_id:  19 direction is H
+For arc_id:  21 direction is H
+
+Packet routing direction at node: p2m2
+For arc_id:  4 direction is H
+For arc_id:  8 direction is W
+For arc_id:  9 direction is S
+For arc_id:  10 direction is W
+For arc_id:  11 direction is S
+For arc_id:  14 direction is H
+For arc_id:  23 direction is H
+For arc_id:  25 direction is H
+
+Packet routing direction at node: p3m7
+For arc_id:  1 direction is H
+For arc_id:  2 direction is E
+For arc_id:  8 direction is H
+For arc_id:  12 direction is N
+For arc_id:  13 direction is E
+For arc_id:  14 direction is N
+For arc_id:  15 direction is W
+For arc_id:  18 direction is H
+For arc_id:  24 direction is W
+For arc_id:  27 direction is H
+
+Packet routing direction at node: p4m4
+For arc_id:  3 direction is H
+For arc_id:  5 direction is H
+For arc_id:  7 direction is E
+For arc_id:  8 direction is S
+For arc_id:  12 direction is H
+For arc_id:  14 direction is N
+For arc_id:  16 direction is E
+For arc_id:  17 direction is W
+For arc_id:  18 direction is S
+For arc_id:  19 direction is W
+For arc_id:  21 direction is N
+For arc_id:  22 direction is H
+
+Packet routing direction at node: p5m5
+For arc_id:  7 direction is H
+For arc_id:  9 direction is H
+For arc_id:  11 direction is S
+For arc_id:  16 direction is H
+For arc_id:  20 direction is S
+For arc_id:  21 direction is W
+For arc_id:  22 direction is W
+For arc_id:  23 direction is N
+For arc_id:  25 direction is N
+For arc_id:  26 direction is H
+
+Packet routing direction at node: p6m8
+For arc_id:  2 direction is H
+For arc_id:  11 direction is H
+For arc_id:  13 direction is H
+For arc_id:  20 direction is H
+For arc_id:  24 direction is W
+For arc_id:  25 direction is N
+For arc_id:  26 direction is N
+For arc_id:  27 direction is W
+
+Packet routing direction at node: p7m0
+For arc_id:  3 direction is E
+For arc_id:  4 direction is E
+For arc_id:  10 direction is S
+For arc_id:  21 direction is S
+
+Packet routing direction at node: p8m1
+For arc_id:  3 direction is S
+For arc_id:  4 direction is E
+For arc_id:  8 direction is S
+For arc_id:  10 direction is W
+For arc_id:  14 direction is E
+For arc_id:  21 direction is W
+**********************************************
+PACKET SPECIFICATION AT INPUT NODES
+**********************************************
+For Source  p0m6 For Destination:  p1m3 arc_id is 0 upper limit is 8
+For Source  p0m6 For Destination:  p3m7 arc_id is 1 upper limit is 8
+For Source  p0m6 For Destination:  p4m4 arc_id is 3 upper limit is 8
+For Source  p0m6 For Destination:  p6m8 arc_id is 2 upper limit is 8
+For Source  p1m3 For Destination:  p0m6 arc_id is 6 upper limit is 8
+For Source  p1m3 For Destination:  p2m2 arc_id is 4 upper limit is 8
+For Source  p1m3 For Destination:  p4m4 arc_id is 5 upper limit is 8
+For Source  p1m3 For Destination:  p5m5 arc_id is 7 upper limit is 8
+For Source  p2m2 For Destination:  p1m3 arc_id is 10 upper limit is 8
+For Source  p2m2 For Destination:  p3m7 arc_id is 8 upper limit is 8
+For Source  p2m2 For Destination:  p5m5 arc_id is 9 upper limit is 8
+For Source  p2m2 For Destination:  p6m8 arc_id is 11 upper limit is 8
+For Source  p3m7 For Destination:  p0m6 arc_id is 15 upper limit is 8
+For Source  p3m7 For Destination:  p2m2 arc_id is 14 upper limit is 8
+For Source  p3m7 For Destination:  p4m4 arc_id is 12 upper limit is 8
+For Source  p3m7 For Destination:  p6m8 arc_id is 13 upper limit is 8
+For Source  p4m4 For Destination:  p0m6 arc_id is 17 upper limit is 8
+For Source  p4m4 For Destination:  p1m3 arc_id is 19 upper limit is 8
+For Source  p4m4 For Destination:  p3m7 arc_id is 18 upper limit is 8
+For Source  p4m4 For Destination:  p5m5 arc_id is 16 upper limit is 8
+For Source  p5m5 For Destination:  p1m3 arc_id is 21 upper limit is 8
+For Source  p5m5 For Destination:  p2m2 arc_id is 23 upper limit is 8
+For Source  p5m5 For Destination:  p4m4 arc_id is 22 upper limit is 8
+For Source  p5m5 For Destination:  p6m8 arc_id is 20 upper limit is 8
+For Source  p6m8 For Destination:  p0m6 arc_id is 24 upper limit is 8
+For Source  p6m8 For Destination:  p2m2 arc_id is 25 upper limit is 8
+For Source  p6m8 For Destination:  p3m7 arc_id is 27 upper limit is 8
+For Source  p6m8 For Destination:  p5m5 arc_id is 26 upper limit is 8
+
+**********************************************
+PACKET ROUTING AT INTERMEDIATE NODES
+**********************************************
+
+Packet routing direction at node: p0m6
+For arc_id:  0 direction is N
+For arc_id:  1 direction is E
+For arc_id:  2 direction is E
+For arc_id:  3 direction is E
+For arc_id:  6 direction is H
+For arc_id:  15 direction is H
+For arc_id:  17 direction is H
+For arc_id:  24 direction is H
+
+Packet routing direction at node: p1m3
+For arc_id:  0 direction is H
+For arc_id:  4 direction is E
+For arc_id:  5 direction is E
+For arc_id:  6 direction is S
+For arc_id:  7 direction is E
+For arc_id:  10 direction is H
+For arc_id:  17 direction is S
+For arc_id:  19 direction is H
+For arc_id:  21 direction is H
+
+Packet routing direction at node: p2m2
+For arc_id:  4 direction is H
+For arc_id:  8 direction is W
+For arc_id:  9 direction is S
+For arc_id:  10 direction is W
+For arc_id:  11 direction is S
+For arc_id:  14 direction is H
+For arc_id:  23 direction is H
+For arc_id:  25 direction is H
+
+Packet routing direction at node: p3m7
+For arc_id:  1 direction is H
+For arc_id:  2 direction is E
+For arc_id:  3 direction is N
+For arc_id:  8 direction is H
+For arc_id:  12 direction is N
+For arc_id:  13 direction is E
+For arc_id:  14 direction is E
+For arc_id:  15 direction is W
+For arc_id:  18 direction is H
+For arc_id:  24 direction is W
+For arc_id:  27 direction is H
+
+Packet routing direction at node: p4m4
+For arc_id:  3 direction is H
+For arc_id:  4 direction is E
+For arc_id:  5 direction is H
+For arc_id:  7 direction is E
+For arc_id:  8 direction is S
+For arc_id:  12 direction is H
+For arc_id:  16 direction is E
+For arc_id:  17 direction is W
+For arc_id:  18 direction is S
+For arc_id:  19 direction is W
+For arc_id:  21 direction is W
+For arc_id:  22 direction is H
+
+Packet routing direction at node: p5m5
+For arc_id:  4 direction is N
+For arc_id:  7 direction is H
+For arc_id:  9 direction is H
+For arc_id:  11 direction is S
+For arc_id:  14 direction is N
+For arc_id:  16 direction is H
+For arc_id:  20 direction is S
+For arc_id:  21 direction is W
+For arc_id:  22 direction is W
+For arc_id:  23 direction is N
+For arc_id:  25 direction is N
+For arc_id:  26 direction is H
+
+Packet routing direction at node: p6m8
+For arc_id:  2 direction is H
+For arc_id:  11 direction is H
+For arc_id:  13 direction is H
+For arc_id:  14 direction is N
+For arc_id:  20 direction is H
+For arc_id:  24 direction is W
+For arc_id:  25 direction is N
+For arc_id:  26 direction is N
+For arc_id:  27 direction is W
+
+Packet routing direction at node: p7m0
+For arc_id:  10 direction is S
+
+Packet routing direction at node: p8m1
+For arc_id:  8 direction is S
+For arc_id:  10 direction is W
