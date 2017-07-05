@@ -3,6 +3,8 @@
 #include <math.h>
 #include <time.h>
 #include <string> 
+#include <stdlib.h>
+#include <sstream>
 
 using namespace std;
 
@@ -110,7 +112,10 @@ void lire(long &n, type_matrice &a, type_matrice &b, int pg_num)
 
   string file_start = "data/qap_data_pg";
   string file_end = ".txt";
-  string pg_num_string = to_string(pg_num);
+  // string pg_num_string = to_string(pg_num);
+  stringstream stemp;
+  stemp << pg_num;
+  string pg_num_string = stemp.str();
 
   string file_name = file_start+pg_num_string+file_end;
 
@@ -277,7 +282,12 @@ int main( int argc, char *argv[])
 
   string file_start = "result/qap_sol_pg";
   string file_end = ".txt";
-  string pg_num_string = to_string(pg_num);
+
+//  string pg_num_string = to_string(pg_num);
+
+  stringstream sstr_temp;
+  sstr_temp << pg_num;
+  string pg_num_string = sstr_temp.str();
 
   string file_name = file_start+pg_num_string+file_end;
 
@@ -291,3 +301,4 @@ int main( int argc, char *argv[])
 
   return 0;
  }
+
