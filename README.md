@@ -2,9 +2,20 @@
 
 # Multi Commodity Max Flow
 
-Various python scripts, that use solvers like gurobi and qap to get optimum pacement flow routing of packets on a Network on Chip for a Matrix Vector Multiplication application
+Various python scripts, that use solvers like gurobi and qap to get optimum pacement flow routing of packets on a Network on Chip running a matrix product application.
 
-The tasks can be broken down in to the following
+To run and files and generate dataf
+
+Dependencies:f
+
+- Python 2.7
+- g++ 
+- Gurobi Optimiser LP Solver
+
+Install gurobi following the steps mentioned here https://www.gurobi.com/documentation/6.5/quickstart_mac/quickstart_mac.html
+- d
+d
+The tasks can be broken down in to the followingf
 
 - Python script lp_qap.py generates text files, which serve as data files for quadratic assignment problem solver
 - sa_qap.cpp files takes the data from text file to generate a optimum placement on the mesh
