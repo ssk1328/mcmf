@@ -19,7 +19,8 @@ Install gurobi following the steps mentioned here https://www.gurobi.com/documen
 
 # Generating Mapping results
 
-Run $ python qap_scripts.py
+$ cd qap
+$ python qap_scripts.py
 
 this will do the following 
 - Python script qap_lp_algo.py generates the initial data files of the form qap_data_pg\<x\>.txt

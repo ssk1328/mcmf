@@ -7,7 +7,7 @@ import os
 def read_placement_files () :
 	placementAll = {}
 	for p in p_values:
-		fileobj = open("qap_scripts/qap_sol_pg"+ str(p) +".txt")
+		fileobj = open("qap/result/qap_sol_pg"+ str(p) +".txt")
 		file_string = fileobj.read()
 		placement_list = map(int, file_string.split())
 		placement_list = [x - 1 for x in placement_list]

@@ -108,7 +108,7 @@ void lire(long &n, type_matrice &a, type_matrice &b, int pg_num)
   char nom_fichier[30];
   long i, j;
 
-  string file_start = "qap_data_pg";
+  string file_start = "data/qap_data_pg";
   string file_end = ".txt";
   string pg_num_string = to_string(pg_num);
 
@@ -275,7 +275,7 @@ int main( int argc, char *argv[])
 
   ofstream file_sol;
 
-  string file_start = "qap_sol_pg";
+  string file_start = "result/qap_sol_pg";
   string file_end = ".txt";
   string pg_num_string = to_string(pg_num);
 
