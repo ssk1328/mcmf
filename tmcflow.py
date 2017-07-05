@@ -230,7 +230,7 @@ def init_arc_list(arc_solution):
 
 def printToFile(arc_list, filename):
 
-    filename = filename + ".bsv"
+    filename = os.getcwd()+"/bsv/"+ filename +".bsv"
     f = open(filename, 'w')
 
     print "**********************************************"

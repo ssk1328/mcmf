@@ -2,6 +2,7 @@ from gurobipy import *
 import math
 import sys
 import copy
+import os
 
 def read_placement_files () :
 	placementAll = {}
@@ -246,7 +247,7 @@ m.addConstrs(
 # Compute optimal solution
 m.optimize()
 
-#filename0 = "Optimize_Runtimes.txt"
+#filename0 = os.getcwd()+"/data/"+ "Optimize_Runtimes.txt"
 #f0 = open(filename0, 'a')
 
 # Print solution
@@ -350,7 +351,8 @@ def init_arc_list(arc_solution):
 
 def printToFile(arc_list, filename):
 
-	filename = filename + ".bsv"
+#	filename = filename + ".bsv"
+	filename = os.getcwd()+"/bsv/"+ filename +".bsv"
 	f = open(filename, 'w')
 
 	print "**********************************************"
