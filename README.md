@@ -1,10 +1,9 @@
-# mcmf
-
-# Multi Commodity Max Flow
+NoC mapping and routing flow
+============================
 
 Various python scripts, that use solvers like gurobi and qap to get optimum pacement flow routing of packets on a Network on Chip running a matrix product application.
 
-# Dependencies:
+## Dependencies: ##
 
 - Python 2.7
 - g++ 
@@ -17,19 +16,20 @@ Install gurobi following the steps mentioned here https://www.gurobi.com/documen
 - Validate the license key
 - Open gurobi shell to verify installation by $ gurobi.sh
 
-# Makefile
-$ make help
+## Makefile ##
+`$ make help`
+
 To see all possible targets for makefile 
 
-$ make
+`$ make`
 
 The default will clean all and generate a fresh mapping and routing solution and resultant bluespec files in /bsv
 
-# Generating Mapping results
+## Generating Mapping results ##
 
-$ make map
+`$ make map`
 
-this will do the following 
+This will do the following 
 - Python script qap_lp_algo.py generates the initial data files of the form qap_data_pg\<x\>.txt
 - sa_qap_mandar.cpp is quadratic assigment problem solver using simulated annealing with hardcoded iteration and revision count
 - g++ to compile the .cpp solver file
@@ -37,15 +37,24 @@ this will do the following
 - Result placement is stored in qap_sol_pg\<x\>.txt files to be read by mcmf solvers later
 - For example for p=2, qap_data_pg2.txt has the data and qap_sol_pg2.txt has the solved location info
 
-# Generating Routing results
+## Generating Routing results ##
 
-$ make route
+`$ make route`
 
-This will generate resultant bluespec files in /bsv folder for both XY and Arc-Path Routing
+This will do the following
+- Read data flow graph to setup initial data structure for multi commodity solver
+- Formulates this as LP with cost and constraint, solved using Gurobi Optimiser
+- Gurobi solutions are used to generate all possible arc-path using min flow recursive cut
+- Generate bsc readable bluespec files in /bsv folder
 
-Get simulation results
+## Get simulation results ##
+
 - Uncomment lines for runtime in mcflow and runtime for that run will append in /data/Optimize_Runtimes.txt 
 - Run scripts/mcflow_gencongestion.py to get model simulated congestion values for arc-path and XY routing
+
+## Input for the flow
+
+- Input data flow graph is specified as the dependency variable in mcflow.py python script, generated for the pg matrix product application
 
 Shashank Gangrade  
 High Performance Computing Lab  
