@@ -596,7 +596,7 @@ for i in range(len(xy_list)):
 ## *************************************************************** ##
 
 
-printToFile(arc_list, "Lookup")
+printToFile(arc_list, "Lookupmcf")
 printToFile(xy_list, "Lookupxy")
 
 
